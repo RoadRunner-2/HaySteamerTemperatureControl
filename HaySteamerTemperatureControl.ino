@@ -33,19 +33,22 @@ void setup() {
 void loop() {
 
   if (timeStatus() == timeNotSet) {
-        return;
+      return;
+  }
+  
+  // read input signals
+  if ((millis() % 500) == 0)
+  {
+    temp.update_temp();
+    if (push_button_was_pressed) {
+      push_button_was_pressed = false;
+      param.hay_steaming_status = Parameter::Status::ready;
     }
+  }
 
   if ((millis() % 5000) == 0)
   {
-    temp.update_temp();
     switch (param.hay_steaming_status) {
-      case Parameter::Status::idle:
-        if (push_button_was_pressed) {
-          push_button_was_pressed = false;
-          param.hay_steaming_status = Parameter::Status::ready;
-        }
-        break;
       case Parameter::Status::ready:
         if (time_of_day_in_minutes() >= param.start_time) {
           // switch_relay(on);
@@ -73,9 +76,14 @@ void loop() {
         break;
     }
     param.print_status();
+  }
+
+  // write output signals
+  if ((millis() % 500) == 0)
+  {
     update_display(param, temp.read1(), temp.read2());
   }
-      
+ 
 }
 
 void update_display(Parameter param, int temp1, int temp2)
@@ -138,4 +146,3 @@ void push_button_ISR()
     push_button_was_pressed = true;
   }
 }
-
