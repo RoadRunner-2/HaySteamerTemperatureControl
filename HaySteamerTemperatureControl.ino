@@ -91,13 +91,13 @@ void update_display(Parameter param, int temp1, int temp2)
   u8g2.firstPage();
   do {
     char line1[25];
-    sprintf(line1, "%2d:%2d", hour(), minute());
+    sprintf(line1, "%02d:%02d", hour(), minute());
 
     char line1_active[25];
     int done_min = (param.reached_minimum_temperature + param.wait_time) % 60;
     int done_hour = (param.reached_minimum_temperature + param.wait_time - done_min) / 60;
     int remaining_minutes = (done_hour * 60 + done_min) - time_of_day_in_minutes();
-    sprintf(line1_active, "done: %2d:%2d (%dmin)", done_hour, done_min, remaining_minutes);
+    sprintf(line1_active, "done: %02d:%02d (%dmin)", done_hour, done_min, remaining_minutes);
 
     u8g2.setFont(u8g2_font_6x12_tf);
     if (param.hay_steaming_status != Parameter::Status::holding_temperature) {
@@ -132,7 +132,7 @@ void update_display(Parameter param, int temp1, int temp2)
     char line4[25];
     int start_time_min = param.start_time % 60;
     int start_time_hour = (param.start_time - start_time_min) / 60;
-    sprintf(line4, "(%2d:%2d, %d°C, %dmin)", start_time_hour, start_time_min, param.minimum_temperature, param.wait_time);
+    sprintf(line4, "(%02d:%02d, %d°C, %dmin)", start_time_hour, start_time_min, param.minimum_temperature, param.wait_time);
 
     u8g2.setFont(u8g2_font_6x12_tf);
     u8g2.drawUTF8(0,60,line4);
