@@ -11,6 +11,8 @@ Parameter param;
 TempProbe temp(3, 7, 4, 3, 8, 4);
 U8G2_SSD1309_128X64_NONAME2_1_SW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);
 
+volatile bool push_button_was_pressed = false;
+
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
@@ -21,6 +23,7 @@ void setup() {
   u8g2.begin(); 
 
   pinMode(2, INPUT);
+  attachInterrupt(digitalPinToInterrupt(2), push_button_ISR, CHANGE);
 
   wlan.setup_wlan_connection();
 
@@ -30,16 +33,21 @@ void setup() {
 void loop() {
 
   if (timeStatus() == timeNotSet) {
-        return;
+      return;
+  }
+  
+  // read input signals
+  if ((millis() % 500) == 0)
+  {
+    temp.update_temp();
+    if (push_button_was_pressed) {
+      push_button_was_pressed = false;
+      param.hay_steaming_status = Parameter::Status::ready;
     }
-
-  if (param.hay_steaming_status == Parameter::Status::idle && digitalRead(2) == HIGH) {
-    param.hay_steaming_status = Parameter::Status::ready;
   }
 
   if ((millis() % 5000) == 0)
   {
-    temp.update_temp();
     switch (param.hay_steaming_status) {
       case Parameter::Status::ready:
         if (time_of_day_in_minutes() >= param.start_time) {
@@ -68,9 +76,14 @@ void loop() {
         break;
     }
     param.print_status();
+  }
+
+  // write output signals
+  if ((millis() % 500) == 0)
+  {
     update_display(param, temp.read1(), temp.read2());
   }
-      
+ 
 }
 
 void update_display(Parameter param, int temp1, int temp2)
@@ -127,5 +140,9 @@ void update_display(Parameter param, int temp1, int temp2)
   } while ( u8g2.nextPage() );
 }
 
-
-
+void push_button_ISR()
+{
+  if (param.hay_steaming_status == Parameter::Status::idle) {
+    push_button_was_pressed = true;
+  }
+}
