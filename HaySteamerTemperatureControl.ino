@@ -53,6 +53,7 @@ void loop() {
         if (time_of_day_in_minutes() >= param.start_time) {
           // switch_relay(on);
           param.hay_steaming_status = Parameter::Status::heating;
+          param.actual_start_time = time_of_day_in_minutes();
         }
         break;
       case Parameter::Status::heating:
@@ -90,21 +91,37 @@ void update_display(Parameter param, int temp1, int temp2)
 {
   u8g2.firstPage();
   do {
-    char line1[25];
-    sprintf(line1, "%02d:%02d", hour(), minute());
+    char line1_curr_time[25];
+    sprintf(line1_curr_time, "%02d:%02d", hour(), minute());
 
-    char line1_active[25];
+    char line1_heating[25];
+    int actual_start_time_min = (param.actual_start_time) % 60;
+    int actual_start_time_hour = (param.actual_start_time - actual_start_time_min) / 60;
+    sprintf(line1_heating, "started: %02d:%02d", actual_start_time_hour, actual_start_time_min);
+
+    char line1_holding_temperature[25];
     int done_min = (param.reached_minimum_temperature + param.wait_time) % 60;
     int done_hour = (param.reached_minimum_temperature + param.wait_time - done_min) / 60;
     int remaining_minutes = (done_hour * 60 + done_min) - time_of_day_in_minutes();
-    sprintf(line1_active, "done: %02d:%02d (%dmin)", done_hour, done_min, remaining_minutes);
+    sprintf(line1_holding_temperature, "done: %02d:%02d (%dmin)", done_hour, done_min, remaining_minutes);
+
+    char line1_done[25];
+    sprintf(line1_done, "done: %02d:%02d", done_hour, done_min);
 
     u8g2.setFont(u8g2_font_6x12_tf);
-    if (param.hay_steaming_status != Parameter::Status::holding_temperature) {
-      u8g2.drawStr(90, 13, line1);
+    if (param.hay_steaming_status == Parameter::Status::heating) {
+      u8g2.drawStr(0, 13, line1_heating);
+      u8g2.drawStr(90, 13, line1_curr_time);
+    }
+    else if (param.hay_steaming_status == Parameter::Status::holding_temperature) {
+      u8g2.drawStr(0, 13, line1_holding_temperature);
+    }
+    else if (param.hay_steaming_status == Parameter::Status::done) {
+      u8g2.drawStr(0, 13, line1_done);
+      u8g2.drawStr(90, 13, line1_curr_time);
     }
     else {
-      u8g2.drawStr(0, 13, line1_active);
+      u8g2.drawStr(90, 13, line1_curr_time);
     }
 
     char line2[25];
