@@ -36,7 +36,8 @@ class Parameter{
     Parameter(){};
 
     Status hay_steaming_status = idle;
-    unsigned int start_time = 1368; // daily start time in minutes
+    unsigned int start_time = 1007; // daily start time in minutes
+    unsigned int actual_start_time = 0; // time when the heating actually started
     int minimum_temperature = 30; // minimum temperature in °C
     unsigned int reached_minimum_temperature = 0; // time of day when the minimum temperature was reached, in minutes
     unsigned int wait_time = 1; // wait time after minimum temperature was reached in minutes
