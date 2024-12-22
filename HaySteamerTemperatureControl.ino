@@ -13,6 +13,10 @@ U8G2_SSD1309_128X64_NONAME2_1_SW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);
 
 volatile bool push_button_was_pressed = false;
 
+const int PIN_RED   = 9;
+const int PIN_GREEN = 10;
+const int PIN_BLUE  = 11;
+
 void setup() {
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
@@ -24,6 +28,10 @@ void setup() {
 
   pinMode(2, INPUT);
   attachInterrupt(digitalPinToInterrupt(2), push_button_ISR, CHANGE);
+
+  pinMode(PIN_RED,   OUTPUT);
+  pinMode(PIN_GREEN, OUTPUT);
+  pinMode(PIN_BLUE,  OUTPUT);
 
   wlan.setup_wlan_connection();
 
@@ -83,6 +91,7 @@ void loop() {
   if ((millis() % 500) == 0)
   {
     update_display(param, temp.read1(), temp.read2());
+    status_led(param.hay_steaming_status);
   }
  
 }
@@ -155,6 +164,36 @@ void update_display(Parameter param, int temp1, int temp2)
     u8g2.drawUTF8(0,60,line4);
     
   } while ( u8g2.nextPage() );
+}
+
+void status_led(const Parameter::Status& state)
+{
+  switch (param.hay_steaming_status) {
+      case Parameter::Status::ready:
+        analogWrite(PIN_RED,   0);
+        analogWrite(PIN_GREEN, 51);
+        analogWrite(PIN_BLUE,  153);        
+        break;
+      case Parameter::Status::heating:
+        analogWrite(PIN_RED,   0);
+        analogWrite(PIN_GREEN, 102);
+        analogWrite(PIN_BLUE,  102);        
+        break;
+      case Parameter::Status::holding_temperature:
+        analogWrite(PIN_RED,   51);
+        analogWrite(PIN_GREEN, 153);
+        analogWrite(PIN_BLUE,  51);
+        break;
+      case Parameter::Status::done:
+        analogWrite(PIN_RED,   51);
+        analogWrite(PIN_GREEN, 201);
+        analogWrite(PIN_BLUE,  51);
+        break;
+      default:
+        analogWrite(PIN_RED,   0);
+        analogWrite(PIN_GREEN, 0);
+        analogWrite(PIN_BLUE,  0);
+    }
 }
 
 void push_button_ISR()
