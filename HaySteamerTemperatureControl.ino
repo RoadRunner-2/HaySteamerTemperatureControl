@@ -11,7 +11,8 @@ Parameter param;
 TempProbe temp(3, 7, 4, 3, 8, 4);
 U8G2_SSD1309_128X64_NONAME2_1_SW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);
 
-volatile bool push_button_was_pressed = false;
+volatile bool ready_button_was_pressed = false;
+volatile bool reset_button_was_pressed = false;
 
 const int PIN_RED   = 9;
 const int PIN_GREEN = 10;
@@ -48,9 +49,14 @@ void loop() {
   if ((millis() % 500) == 0)
   {
     temp.update_temp();
-    if (push_button_was_pressed) {
-      push_button_was_pressed = false;
+    if (ready_button_was_pressed) {
+      ready_button_was_pressed = false;
       param.hay_steaming_status = Parameter::Status::ready;
+    }
+    if (reset_button_was_pressed) {
+      reset_button_was_pressed = false;
+      sprintf(param.error_message, ""); // clear error message
+      param.hay_steaming_status = Parameter::Status::idle; // reset state
     }
   }
 
@@ -58,30 +64,49 @@ void loop() {
   {
     switch (param.hay_steaming_status) {
       case Parameter::Status::ready:
-        if (time_of_day_in_minutes() >= param.start_time) {
+        if (time_of_day_in_minutes() >= param.start_time) 
+        {
           // switch_relay(on);
           param.hay_steaming_status = Parameter::Status::heating;
           param.actual_start_time = time_of_day_in_minutes();
         }
         break;
       case Parameter::Status::heating:
-        if (temp.read_min_temp() >= param.minimum_temperature) {
-            param.reached_minimum_temperature = time_of_day_in_minutes();
-            param.hay_steaming_status = Parameter::Status::holding_temperature;
-          }
+        if (temp.read_min_temp() >= param.minimum_temperature) 
+        {
+          param.reached_minimum_temperature = time_of_day_in_minutes();
+          param.hay_steaming_status = Parameter::Status::holding_temperature;
+        }
+        if (time_of_day_in_minutes() - param.actual_start_time > param.heating_timeout)
+        {
+          // switch_relay(off);
+          sprintf(param.error_message, "timeout after %d min", param.heating_timeout);
+          param.hay_steaming_status = Parameter::Status::error;
+        }
         break;
       case Parameter::Status::holding_temperature:
-        if (time_of_day_in_minutes() - param.reached_minimum_temperature >= param.wait_time) {
+        if (time_of_day_in_minutes() - param.reached_minimum_temperature >= param.wait_time) 
+        {
           // switch_relay(off);
           param.time_when_done = time_of_day_in_minutes();
           param.hay_steaming_status = Parameter::Status::done;
         }
+        if (temp.read_min_temp() < param.minimum_temperature - param.holding_temperature_drop)
+        {
+          // switch_relay(off);
+          sprintf(param.error_message, "temp drop > %d deg", param.holding_temperature_drop);
+          param.hay_steaming_status = Parameter::Status::error;
+        }
         break;
       case Parameter::Status::done:
         // signal done for an hour, the go back to idle
-        if (time_of_day_in_minutes() - param.time_when_done >= 60) {
+        if (time_of_day_in_minutes() - param.time_when_done >= 1) 
+        {
           param.hay_steaming_status = Parameter::Status::idle;
         }
+        break;
+      case Parameter::Status::error:
+        // switch_relay(off);
         break;
     }
     param.print_status();
@@ -139,22 +164,30 @@ void update_display(Parameter param, int temp1, int temp2)
     u8g2.setFont(u8g2_font_10x20_tf);
     u8g2.drawUTF8(0,30,line2);
 
-    char line3[25];
-    if (param.hay_steaming_status == Parameter::Status::idle) {
-      sprintf(line3, "IDLE");
-    }
-    else if (param.hay_steaming_status == Parameter::Status::ready) {
-      sprintf(line3, "READY");
-    }
-    else if (param.hay_steaming_status == Parameter::Status::heating | param.hay_steaming_status == Parameter::Status::holding_temperature) {
-      sprintf(line3, "ACTIVE");
-    }
-    else if (param.hay_steaming_status == Parameter::Status::done) {
-      sprintf(line3, "DONE");
-    }
 
-    u8g2.drawUTF8(30,47,line3);
-
+    if (param.hay_steaming_status == Parameter::Status::error)
+    {
+      u8g2.setFont(u8g2_font_6x12_tf);
+      u8g2.drawUTF8(0,47,param.error_message);
+    }
+    else
+    {
+      char line3[25];
+      if (param.hay_steaming_status == Parameter::Status::idle) {
+        sprintf(line3, "IDLE");
+      }
+      else if (param.hay_steaming_status == Parameter::Status::ready) {
+        sprintf(line3, "READY");
+      }
+      else if (param.hay_steaming_status == Parameter::Status::heating | param.hay_steaming_status == Parameter::Status::holding_temperature) {
+        sprintf(line3, "ACTIVE");
+      }
+      else if (param.hay_steaming_status == Parameter::Status::done) {
+        sprintf(line3, "DONE");
+      }
+      u8g2.drawUTF8(30,47,line3);
+    }
+    
     char line4[25];
     int start_time_min = param.start_time % 60;
     int start_time_hour = (param.start_time - start_time_min) / 60;
@@ -189,6 +222,11 @@ void status_led(const Parameter::Status& state)
         analogWrite(PIN_GREEN, 201);
         analogWrite(PIN_BLUE,  51);
         break;
+      case Parameter::Status::error:
+        analogWrite(PIN_RED,   255);
+        analogWrite(PIN_GREEN, 0);
+        analogWrite(PIN_BLUE,  0);
+        break;
       default:
         analogWrite(PIN_RED,   0);
         analogWrite(PIN_GREEN, 0);
@@ -199,6 +237,9 @@ void status_led(const Parameter::Status& state)
 void push_button_ISR()
 {
   if (param.hay_steaming_status == Parameter::Status::idle) {
-    push_button_was_pressed = true;
+    ready_button_was_pressed = true;
+  }
+  else if (param.hay_steaming_status == Parameter::Status::error) {
+    reset_button_was_pressed = true;
   }
 }
