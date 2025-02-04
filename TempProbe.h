@@ -47,10 +47,4 @@ class TempProbe
     int temp2 = 0;
 };
 
-
-
-
-
-
-
 #endif
