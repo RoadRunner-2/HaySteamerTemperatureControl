@@ -40,7 +40,7 @@ class Parameter{
     unsigned int wait_time = 1; // wait time after minimum temperature was reached in minutes
 
     // status/progress of the steaming process
-    Status hay_steaming_status = idle;
+    volatile Status hay_steaming_status = idle;
     unsigned int actual_start_time = 0; // time when the heating actually started
     unsigned int reached_minimum_temperature = 0; // time of day when the minimum temperature was reached, in minutes
     unsigned int time_when_done = 0; // time in minutes when the steaming process was done
