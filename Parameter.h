@@ -1,19 +1,11 @@
 #ifndef Parameter_h
 #define Parameter_h
 
+#include "Services.h"
 #include <TimeLib.h>
 
 class Parameter{
   public:
-    enum Status{
-      idle = 0,
-      ready,
-      heating,
-      holding_temperature,
-      done, 
-      error
-    };
-
     void print_status()
     {
       if (hay_steaming_status == idle) {
