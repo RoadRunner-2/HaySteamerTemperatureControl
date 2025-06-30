@@ -58,7 +58,7 @@
         <mxCell id="WArmY9lFXDh91Jk2O42J-15" value="ReadInputData" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="WArmY9lFXDh91Jk2O42J-14">
           <mxGeometry width="130" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="WArmY9lFXDh91Jk2O42J-16" value="REST_Output" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="1">
+        <mxCell id="WArmY9lFXDh91Jk2O42J-16" value="drv_REST" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="1">
           <mxGeometry x="1070" y="240" width="130" height="70" as="geometry" />
         </mxCell>
         <mxCell id="WArmY9lFXDh91Jk2O42J-17" value="&lt;div&gt;UpdateNTPTime&lt;/div&gt;" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="1">
@@ -91,7 +91,7 @@
         <mxCell id="WArmY9lFXDh91Jk2O42J-26" value="" style="group" vertex="1" connectable="0" parent="1">
           <mxGeometry x="1070" y="160" width="130" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="WArmY9lFXDh91Jk2O42J-27" value="DisplayOutput" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="WArmY9lFXDh91Jk2O42J-26">
+        <mxCell id="WArmY9lFXDh91Jk2O42J-27" value="drv_display" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="WArmY9lFXDh91Jk2O42J-26">
           <mxGeometry width="130" height="70" as="geometry" />
         </mxCell>
         <mxCell id="WArmY9lFXDh91Jk2O42J-28" value="&lt;div&gt;LibHomeAssistant&lt;/div&gt;" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="1">
@@ -100,8 +100,8 @@
         <mxCell id="WArmY9lFXDh91Jk2O42J-29" value="&lt;div&gt;LibLED&lt;/div&gt;" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="1">
           <mxGeometry x="1270" y="320" width="130" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="WArmY9lFXDh91Jk2O42J-30" value="LED_Output" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1070" y="320" width="130" height="70" as="geometry" />
+        <mxCell id="WArmY9lFXDh91Jk2O42J-30" value="drv_Relay" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="400" width="130" height="70" as="geometry" />
         </mxCell>
         <mxCell id="WArmY9lFXDh91Jk2O42J-31" value="" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="1">
           <mxGeometry x="500" y="240" width="250" height="220" as="geometry" />
@@ -126,6 +126,12 @@
         </mxCell>
         <mxCell id="WArmY9lFXDh91Jk2O42J-38" value="StartConditions" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="WArmY9lFXDh91Jk2O42J-37">
           <mxGeometry width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="WArmY9lFXDh91Jk2O42J-39" value="&lt;div&gt;LibRelay&lt;/div&gt;" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="400" width="130" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="WArmY9lFXDh91Jk2O42J-40" value="drv_LED" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=50;tabHeight=17;tabPosition=left;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="320" width="130" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
