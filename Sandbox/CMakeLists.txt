@@ -11,6 +11,13 @@ endif()
 
 project ("Sandbox")
 
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/heads/main.zip
+)
+FetchContent_MakeAvailable(googletest)
+
 # Add source to this project's executable.
 add_executable (Sandbox 
 	"Sandbox.cpp" 
@@ -29,5 +36,13 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
 endif()
 
 target_include_directories(Sandbox PRIVATE ${CMAKE_SOURCE_DIR}../)
+
+# Add unit tests.
+add_executable(UnitTests SandboxTests/Test_ParameterEditor.cpp)
+target_link_libraries(UnitTests Test_ParameterEditor)
+set_target_properties(UnitTests PROPERTIES CXX_STANDARD 14)
+
+include(GoogleTest)
+gtest_discover_tests(UnitTests)
 
 # TODO: Add tests and install targets if needed.
