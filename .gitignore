@@ -2,8 +2,63 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/Sandbox/build
-/Sandbox/.vs/Sandbox/copilot-chat/f9cb8801/sessions
-/Sandbox/.vs/Sandbox/CopilotIndices/17.14.734.62261
-/Sandbox/out/build/x64-debug
-/Sandbox/SandboxTests/x64/Debug
+# Visual Studio user-specific files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.log
+
+# CMake build files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+Testing/
+build/
+out/
+
+# Visual Studio project files (if generated, not source)
+*.VC.db
+*.VC.opendb
+*.ipch
+*.obj
+*.pdb
+*.idb
+*.tlog
+*.lastbuildstate
+*.opensdf
+*.sdf
+*.cache
+*.ilk
+
+# Generated files by GTest/GoogleMock
+_deps/
+*.dir/
+
+# Other temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.~*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Package management
+packages/
+*.nupkg
+
+# Exclude local test result files
+TestResults/
