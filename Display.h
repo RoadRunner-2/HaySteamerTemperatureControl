@@ -8,7 +8,7 @@ class Display
 {
   public:
   Display()
-    : u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE)
+    : u8g2(U8G2_R0, SCL, SDA, 13)
   {};
 
   void setup_display()
@@ -16,10 +16,10 @@ class Display
     u8g2.begin();
   };
 
-  void update_current_time()
-  {
-    sprintf(current_time, "%02d:%02d", hour(), minute());
-  };
+   void update_current_time()
+   {
+     sprintf(current_time, "%02d:%02d", hour(), minute());
+   };
 
   void update_line_1(Status state, const int& time = 0)
   {

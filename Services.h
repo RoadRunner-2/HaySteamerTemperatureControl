@@ -10,16 +10,6 @@ enum InputMode
   min_time
 };
 
-enum Status
-{
-  idle = 0,
-  ready,
-  heating,
-  holding_temperature,
-  done, 
-  error
-};
-
 int convert_to_minutes(const int& time_min)
 {
   return (time_min) % 60;

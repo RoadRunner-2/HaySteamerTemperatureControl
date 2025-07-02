@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Sandbox/build
+/Sandbox/.vs/Sandbox/copilot-chat/f9cb8801/sessions
+/Sandbox/.vs/Sandbox/CopilotIndices/17.14.734.62261
+/Sandbox/out/build/x64-debug
