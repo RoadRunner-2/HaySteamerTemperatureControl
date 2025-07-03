@@ -1,3 +1,5 @@
+#define ARDUINO 1
+
 #include <StatusLED.h>
 #include <Communication.h>
 #include <Relay.h>

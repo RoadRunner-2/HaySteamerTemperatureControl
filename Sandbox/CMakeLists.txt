@@ -49,6 +49,8 @@ endif()
 # Add unit tests.
 add_executable(UnitTests
     SandboxTests/Test_ParameterEditor.cpp
+    SandboxTests/Test_ManualEditor.cpp
+    SandboxTests/Test_DisplayFormatter.cpp
     SandboxTests/pch.h # Add this if you use precompiled headers
 )
 
