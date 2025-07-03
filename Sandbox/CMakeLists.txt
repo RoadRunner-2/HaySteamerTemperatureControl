@@ -10,9 +10,8 @@ if (POLICY CMP0141)
 endif()
 
 # Use the dynamic runtime for all targets (recommended for GoogleTest)
-if(MSVC)
-  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "" FORCE)
-endif()
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "" FORCE)
 
 project ("Sandbox")
 
