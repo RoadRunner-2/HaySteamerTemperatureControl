@@ -35,6 +35,7 @@ add_executable(Sandbox
     ../Keypad.h
     ../Display.h
     ../ParameterEditor.h
+    ../ParameterEditor.cpp
 )
 
 target_compile_definitions(Sandbox PRIVATE SANDBOX_ENVIRONMENT)
@@ -58,6 +59,7 @@ add_executable(UnitTests
 target_include_directories(UnitTests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/SandboxTests
+    ${CMAKE_CURRENT_SOURCE_DIR}/..
     # Add other include paths as needed
 )
 
