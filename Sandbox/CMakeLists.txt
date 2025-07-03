@@ -52,6 +52,7 @@ add_executable(UnitTests
     SandboxTests/Test_ManualEditor.cpp
     SandboxTests/Test_DisplayFormatter.cpp
     SandboxTests/pch.h # Add this if you use precompiled headers
+    ../ParameterEditor.cpp
 )
 
 # Add include directories for UnitTests if needed
