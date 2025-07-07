@@ -35,6 +35,8 @@ add_executable(Sandbox
     ../Display.h
     ../ParameterEditor.h
     ../ParameterEditor.cpp
+    ../SensorInputProcessor.h
+    ../SensorInputProcessor.cpp
 )
 
 target_compile_definitions(Sandbox PRIVATE SANDBOX_ENVIRONMENT)
@@ -51,8 +53,10 @@ add_executable(UnitTests
     SandboxTests/Test_ParameterEditor.cpp
     SandboxTests/Test_ManualEditor.cpp
     SandboxTests/Test_DisplayFormatter.cpp
+    SandboxTests/Test_SensorInputProcessor.cpp
     SandboxTests/pch.h # Add this if you use precompiled headers
     ../ParameterEditor.cpp
+    ../SensorInputProcessor.cpp
 )
 
 # Add include directories for UnitTests if needed
