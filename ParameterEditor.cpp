@@ -209,6 +209,8 @@ String DisplayFormatter::formatIdleDisplay(int hours, int minutes, int temp, int
 String DisplayFormatter::formatEditDisplay(ManualEditor::EditMode mode, const char* inputBuffer, int inputPos,
     int hours, int minutes, int temp, int span) 
 {
+	if (mode == ManualEditor::NONE) return formatIdleDisplay(hours, minutes, temp, span);
+
     String timeStr, tempStr, spanStr;
 
     switch (mode) {
