@@ -26,6 +26,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(Sandbox 
     Sandbox.cpp 
     Sandbox.h
+    Status.h
     ../TempProbe.h
     ../TaskScheduler.h
     ../StateMachine.h
