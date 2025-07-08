@@ -1,8 +1,9 @@
 #pragma once
 
+template<typename T>
 class Sensor {
 public:
     virtual ~Sensor() {}
-    virtual double read() = 0;
+    virtual T read() = 0;
     virtual void initialize() = 0;
 };

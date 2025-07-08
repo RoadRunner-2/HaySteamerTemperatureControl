@@ -59,6 +59,7 @@ add_executable(UnitTests
     SandboxTests/Test_TimeLib.cpp
     SandboxTests/pch.h # Add this if you use precompiled headers
     ../ParameterEditor.cpp
+    ../Sensor.h
     TimeLib.h
     ../TempReader.h
     ../Sensor.h

@@ -32,18 +32,19 @@ constexpr Fptr toString = String;
 #include <Status.h>
 #endif
 
+using TempSensor = Sensor<int>;
 
 class TempReader {
 public:
     // No interval parameter needed anymore
-    TempReader(Sensor* sensor)
+    TempReader(TempSensor* sensor)
         : sensor(sensor), lastValue(0) {
     }
 
 	/// This function updates the lastValue with the current sensor reading
 	/// It should be called periodically to keep the lastValue updated.
     void update() {
-        lastValue = static_cast<int>(sensor->read());
+        lastValue = sensor->read();
     }
 
 	/// Returns the last read temperature value in °C.
@@ -62,7 +63,7 @@ public:
     }
 
 private:
-    Sensor* sensor;
+    TempSensor* sensor;
     int lastValue;
 };
 

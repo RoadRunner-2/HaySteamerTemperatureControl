@@ -4,9 +4,9 @@
 #include "../Sensor.h"
 
 // Mock Sensor implementation
-class MockSensor : public Sensor {
+class MockSensor : public Sensor<int> {
 public:
-    MOCK_METHOD(double, read, (), (override));
+    MOCK_METHOD(int, read, (), (override));
     MOCK_METHOD(void, initialize, (), (override));
 };
 
@@ -26,7 +26,7 @@ TEST(TempReaderTest, UpdatesValueFromSensor) {
     TempReader reader(&mockSensor);
 
     EXPECT_CALL(mockSensor, read())
-        .WillOnce(Return(23.7));
+        .WillOnce(Return(23));
 
     reader.update();
     EXPECT_EQ(reader.getLatestValue(), 23);
@@ -38,8 +38,8 @@ TEST(TempReaderTest, UpdatesValueMultipleTimes) {
     TempReader reader(&mockSensor);
 
     EXPECT_CALL(mockSensor, read())
-        .WillOnce(Return(15.2))
-        .WillOnce(Return(-5.8));
+        .WillOnce(Return(15))
+        .WillOnce(Return(-5));
 
     reader.update();
     EXPECT_EQ(reader.getLatestValue(), 15);
