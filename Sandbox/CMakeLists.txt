@@ -26,6 +26,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(Sandbox 
     Sandbox.cpp 
     Sandbox.h
+    Sensor.h
     Status.h
     ../TempProbe.h
     ../TaskScheduler.h
@@ -36,8 +37,7 @@ add_executable(Sandbox
     ../Display.h
     ../ParameterEditor.h
     ../ParameterEditor.cpp
-    ../SensorInputProcessor.h
-    ../SensorInputProcessor.cpp
+    ../TempReader.h
 )
 
 target_compile_definitions(Sandbox PRIVATE SANDBOX_ENVIRONMENT)
@@ -54,10 +54,11 @@ add_executable(UnitTests
     SandboxTests/Test_ParameterEditor.cpp
     SandboxTests/Test_ManualEditor.cpp
     SandboxTests/Test_DisplayFormatter.cpp
-    SandboxTests/Test_SensorInputProcessor.cpp
+    SandboxTests/Test_TempReader.cpp
     SandboxTests/pch.h # Add this if you use precompiled headers
     ../ParameterEditor.cpp
-    ../SensorInputProcessor.cpp
+    ../TempReader.h
+    ../Sensor.h
 )
 
 # Add include directories for UnitTests if needed
@@ -70,7 +71,7 @@ target_include_directories(UnitTests PRIVATE
 
 target_compile_definitions(UnitTests PRIVATE SANDBOX_ENVIRONMENT)
 
-target_link_libraries(UnitTests PRIVATE GTest::gtest GTest::gtest_main)
+target_link_libraries(UnitTests PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 set_target_properties(UnitTests PROPERTIES CXX_STANDARD 20) # Match your main project
 
 include(GoogleTest)
