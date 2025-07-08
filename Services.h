@@ -1,15 +1,6 @@
 #ifndef Services_h
 #define Services_h
 
-enum InputMode
-{
-  none = 0,
-  start_hour,
-  start_minute,
-  min_temp,
-  min_time
-};
-
 int convert_to_minutes(const int& time_min)
 {
   return (time_min) % 60;
