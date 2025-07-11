@@ -29,17 +29,22 @@ using Display126x64 = Drawer<4>;
 class DisplayWriter {
 public:
     using ContentProvider = std::function<String()>;
-
-	// always initialize with 4 valid content providers
+	/// <summary>
+	/// always initialize with 4 valid content providers
+	/// </summary>
     DisplayWriter(Display126x64* display, ContentProvider line1Provider, ContentProvider line2Provider,
         ContentProvider line3Provider, ContentProvider line4Provider);
     ~DisplayWriter();
 
-    // change content provider for a specific line (0-3)
+	/// <summary>
+    /// change content provider for a specific line (0-3)
+	/// </summary>
     void setLineProvider(int lineNumber, ContentProvider provider);
 
+	/// <summary>
 	/// calls ContentProvider to update all lines and writes to hardware
     /// call cyclically
+	/// </summary>
     void updateAllLines();
 
 private:
