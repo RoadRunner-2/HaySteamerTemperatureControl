@@ -28,7 +28,6 @@ add_executable(Sandbox
     Sandbox.h
     Sensor.h
     Status.h
-    TimeLib.h
     ../TempProbe.h
     ../TaskScheduler.h
     ../StateMachine.h
@@ -60,7 +59,6 @@ add_executable(UnitTests
     SandboxTests/pch.h # Add this if you use precompiled headers
     ../ParameterEditor.cpp
     ../Sensor.h
-    TimeLib.h
     ../TempReader.h
     ../Sensor.h
 )
