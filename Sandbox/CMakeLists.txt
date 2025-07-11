@@ -40,6 +40,7 @@ add_executable(Sandbox
     ../ParameterEditor.cpp
     ../TempReader.h
     ../TimeReader.h
+    ../TimeReader.cpp
 )
 
 target_compile_definitions(Sandbox PRIVATE SANDBOX_ENVIRONMENT)
@@ -62,7 +63,7 @@ add_executable(UnitTests
     ../ParameterEditor.cpp
     ../Sensor.h
     ../TempReader.h
-    ../TimeReader.h
+    ../TimeReader.cpp
 )
 
 # Add include directories for UnitTests if needed
