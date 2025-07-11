@@ -41,6 +41,9 @@ add_executable(Sandbox
     ../TempReader.h
     ../TimeReader.h
     ../TimeReader.cpp
+    ../Drawer.h
+    ../DisplayWriter.h
+    ../DisplayWriter.cpp
 )
 
 target_compile_definitions(Sandbox PRIVATE SANDBOX_ENVIRONMENT)
@@ -59,11 +62,13 @@ add_executable(UnitTests
     SandboxTests/Test_DisplayFormatter.cpp
     SandboxTests/Test_TempReader.cpp
     SandboxTests/Test_TimeReader.cpp
+    SandboxTests/Test_DisplayWriter.cpp
     SandboxTests/pch.h # Add this if you use precompiled headers
     ../ParameterEditor.cpp
     ../Sensor.h
     ../TempReader.h
     ../TimeReader.cpp
+    ../DisplayWriter.cpp
 )
 
 # Add include directories for UnitTests if needed
