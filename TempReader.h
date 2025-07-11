@@ -10,13 +10,6 @@ using String = std::string; // Define "String" as an alias for std::string
 using Fptr = std::string(*)(int);
 constexpr Fptr toString = &std::to_string;
 
-#include <chrono>
-// Mock implementation of millis() for sandbox environment
-inline unsigned long millis() {
-    static auto startTime = std::chrono::steady_clock::now();
-    auto currentTime = std::chrono::steady_clock::now();
-    return static_cast<unsigned long>(std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - startTime).count());
-}
 #include "Sandbox/Sensor.h"
 #include "Sandbox/Status.h"
 
@@ -27,7 +20,6 @@ inline unsigned long millis() {
 using Fptr = std::string(*)(int);
 constexpr Fptr toString = String;
 
-// millis() is provided by the Arduino framework, no need to define it
 #include <Sensor.h>
 #include <Status.h>
 #endif
