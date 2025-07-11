@@ -33,20 +33,26 @@ public:
         : sensor(sensor), lastValue(0) {
     }
 
+	/// <summary>
 	/// This function updates the lastValue with the current sensor reading
 	/// It should be called periodically to keep the lastValue updated.
+	/// </summary>
     void update() {
         lastValue = sensor->read();
     }
 
+	/// <summary>
 	/// Returns the last read temperature value in °C.
+	/// </summary>
 	/// <returns>Last temperature value in °C.</returns>
     int getLatestValue() const {
         return lastValue;
     }
 
+	/// <summary>
 	/// Get the latest value as string ("TTT°C"), always 6 characters long,
 	/// where TTT is the temperature in °C.
+	/// </summary>
 	/// <returns>String representation of the last temperature value.</returns>
     String getDisplayString() const {
         char buf[8];
