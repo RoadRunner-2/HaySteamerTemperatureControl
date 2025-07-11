@@ -1,5 +1,5 @@
 ﻿#include "gtest/gtest.h"
-#include "gmock/gmock.h" // Include Google Mock header
+#include "gmock/gmock.h"
 #include "../../TempReader.h"
 #include "../Sensor.h"
 
