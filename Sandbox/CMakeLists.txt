@@ -65,6 +65,7 @@ add_executable(UnitTests
     SandboxTests/Test_TimeReader.cpp
     SandboxTests/Test_DisplayWriter.cpp
     SandboxTests/Test_KeypadReader.cpp
+    SandboxTests/Test_StateMachine.cpp
     SandboxTests/pch.h # Add this if you use precompiled headers
     ../ParameterEditor.cpp
     ../Sensor.h
@@ -72,6 +73,7 @@ add_executable(UnitTests
     ../TimeReader.cpp
     ../DisplayWriter.cpp
     ../KeypadReader.h
+    ../StateMachine.h
 )
 
 # Add include directories for UnitTests if needed

@@ -1,77 +1,86 @@
 #ifndef StateMachine_h
 #define StateMachine_h
 
+
+#ifdef SANDBOX_ENVIRONMENT
+#include <string> // Include the standard string library
+using String = std::string; // Define "String" as an alias for std::string
+// Define toString(int) as std::to_string
+using Fptr = std::string(*)(int);
+constexpr Fptr toString = &std::to_string;
+
+#include "Sandbox/Status.h" 
+#include <map>
+#include <functional>
+#endif
+
+#ifdef ARDUINO
+// Define toString(int) as String(int)
+using Fptr = std::string(*)(int);
+constexpr Fptr toString = String;
+
 #include <Arduino.h>
 #include <functional>
 #include <map>
 #include <Status.h>
+#endif
 
 class HaySteamerStateMachine {
 public:
-  // A callback type that receives the "from" Status and "to" Status.
   using Callback = std::function<void(Status, Status)>;
 
-  // Constructor: initialize with the default Status (Idle).
-  HaySteamerStateMachine() : currentStatus(Status::idle) {}
-
-  // Register a callback for a specific Status transition.
-  void registerCallback(Status from, Status to, Callback cb) 
+  HaySteamerStateMachine() 
+      : currentStatus(Status::idle) 
   {
-    TransitionKey key { from, to };
+    // Register all valid transitions with dummy callbacks
+    registerCallback(Status::idle,    Status::ready,   emptyTransitionFunction);
+    registerCallback(Status::ready,   Status::heating, emptyTransitionFunction);
+    registerCallback(Status::heating, Status::holding, emptyTransitionFunction);
+    registerCallback(Status::holding, Status::done,    emptyTransitionFunction);
+    // error transitions
+    registerCallback(Status::idle,    Status::error,   emptyTransitionFunction);
+    registerCallback(Status::ready,   Status::error,   emptyTransitionFunction);
+    registerCallback(Status::heating, Status::error,   emptyTransitionFunction);
+    registerCallback(Status::holding, Status::error,   emptyTransitionFunction);
+    registerCallback(Status::done,    Status::error,   emptyTransitionFunction);
+    registerCallback(Status::error,   Status::idle,    emptyTransitionFunction);
+  }
+
+  void registerCallback(Status from, Status to, Callback cb) {
+    TransitionKey key{ from, to };
     transitions[key] = cb;
   }
 
-  // Change the Status of the state machine.
-  void changeStatus(Status newStatus) 
-  {
+  void changeStatus(Status newStatus) {
     Status oldStatus = currentStatus;
     if (oldStatus == newStatus) return; // No Status change
 
-    currentStatus = newStatus;
-    // Look-up the registered callback for this Status transition, if any.
-    TransitionKey key { oldStatus, newStatus };
+    TransitionKey key{ oldStatus, newStatus };
     auto it = transitions.find(key);
-    if (it != transitions.end()) {
-      // Call the callback, passing the old and new Status.
-      it->second(oldStatus, newStatus);
+    if (it == transitions.end()) {
+      // Invalid transition, do nothing
+      return;
     }
+    currentStatus = newStatus;
+    it->second(oldStatus, newStatus);
   }
 
-  // This method is meant to be called whenever the push button is pressed.
-  void start_button_pressed() 
-  {
-    // Determine the next state based on the current state.
-    switch (currentStatus) {
-      case Status::idle:
-        changeStatus(Status::ready);
-        break;
-      case Status::error:
-        changeStatus(Status::idle);
-        break;
-    }
-  }
-
-  // Retrieve the current Status of the state machine.
   Status getCurrentStatus() const { return currentStatus; }
 
 private:
-  // Helper struct used as a key in the transition callback map.
   struct TransitionKey {
     Status from;
     Status to;
-
-    // Operator for ordering keys in std::map.
-    bool operator<(const TransitionKey &other) const {
+    bool operator<(const TransitionKey& other) const {
       if (static_cast<int>(from) != static_cast<int>(other.from))
         return static_cast<int>(from) < static_cast<int>(other.from);
       return static_cast<int>(to) < static_cast<int>(other.to);
     }
   };
 
-  // Map to hold callback functions for specific state transitions.
+  static void emptyTransitionFunction(Status /*from*/, Status /*to*/) {}
+
   std::map<TransitionKey, Callback> transitions;
-    
-  // The current Status of the finite state machine.
   Status currentStatus;
 };
 
