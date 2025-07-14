@@ -1,14 +1,21 @@
 #include "DisplayWriter.h"
 
-DisplayWriter::DisplayWriter(Display126x64* display, ContentProvider line1Provider, ContentProvider line2Provider,
-    ContentProvider line3Provider, ContentProvider line4Provider)
+DisplayWriter::DisplayWriter(Display126x64* display)
     : display(display)
-    , m_lineProviders{ line1Provider, line2Provider, line3Provider, line4Provider }
 {
     clearAllLines();
 }
 
 DisplayWriter::~DisplayWriter() {
+}
+
+void DisplayWriter::setAllProvider(ContentProvider line1Provider, ContentProvider line2Provider,
+    ContentProvider line3Provider, ContentProvider line4Provider)
+{
+    m_lineProviders[0] = line1Provider;
+    m_lineProviders[1] = line2Provider;
+    m_lineProviders[2] = line3Provider;
+    m_lineProviders[3] = line4Provider;
 }
 
 void DisplayWriter::setLineProvider(int lineNumber, ContentProvider provider) {

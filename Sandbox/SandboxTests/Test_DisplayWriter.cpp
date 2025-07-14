@@ -29,7 +29,8 @@ TEST(DisplayWriterTest, UpdateAllLinesCallsDrawerWithCorrectContent) {
     EXPECT_CALL(line3, call()).WillOnce(Return("C"));
     EXPECT_CALL(line4, call()).WillOnce(Return("D"));
 
-	DisplayWriter writer(&mockDisplay, line1, line2, line3, line4);
+    DisplayWriter writer(&mockDisplay);
+    writer.setAllProvider(line1, line2, line3, line4);
 
     String expected[4] = { "A", "B", "C", "D" };
     EXPECT_CALL(mockDisplay, write(testing::Truly([&expected](const String (&arr)[4]) {
@@ -49,7 +50,8 @@ TEST(DisplayWriterTest, SetLineProviderChangesContent) {
     EXPECT_CALL(line4, call()).WillRepeatedly(Return("D"));
     EXPECT_CALL(newLine2, call()).WillRepeatedly(Return("X"));
 
-    DisplayWriter writer(&mockDisplay, line1, line2, line3, line4);
+    DisplayWriter writer(&mockDisplay);
+    writer.setAllProvider(line1, line2, line3, line4);
 
     // First update: original content
     String expected1[4] = { "A", "B", "C", "D" };
@@ -78,7 +80,8 @@ TEST(DisplayWriterTest, InvalidLineProviderDoesNotCrash) {
     EXPECT_CALL(line3, call()).WillRepeatedly(Return("C"));
     EXPECT_CALL(line4, call()).WillRepeatedly(Return("D"));
 
-    DisplayWriter writer(&mockDisplay, line1, line2, line3, line4);
+    DisplayWriter writer(&mockDisplay);
+    writer.setAllProvider(line1, line2, line3, line4);
     // Should not throw or crash
     writer.setLineProvider(-1, invalid);
     writer.setLineProvider(4, invalid);
@@ -93,14 +96,15 @@ TEST(DisplayWriterTest, ChangeToInvalidProviderExpectEmptyString) {
     EXPECT_CALL(line3, call()).WillRepeatedly(Return("C"));
     EXPECT_CALL(line4, call()).WillRepeatedly(Return("D"));
 
-    DisplayWriter writer(&mockDisplay, line1, line2, line3, line4);
+    DisplayWriter writer(&mockDisplay);
+    writer.setAllProvider(line1, line2, line3, line4);
 
     // First update: original content
     String expected1[4] = { "A", "B", "C", "D" };
     EXPECT_CALL(mockDisplay, write(testing::Truly([&expected1](const String(&arr)[4]) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected1[i]) return false;
         return true;
-        })));
+    })));
     writer.updateAllLines();
 
     // Change line 1 provider to invalid and update again
@@ -109,6 +113,6 @@ TEST(DisplayWriterTest, ChangeToInvalidProviderExpectEmptyString) {
     EXPECT_CALL(mockDisplay, write(testing::Truly([&expected2](const String(&arr)[4]) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected2[i]) return false;
         return true;
-        })));
+    })));
     writer.updateAllLines();
 }
