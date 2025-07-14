@@ -1,15 +1,13 @@
 #ifndef DISPLAY_WRITER_H
 #define DISPLAY_WRITER_H
 
-#ifdef SANDBOX_ENVIRONMENT
 #include <functional>
-#include <string> // Include the standard string library
-using String = std::string; // Define "String" as an alias for std::string
-// Define toString(int) as std::to_string
-using Fptr = std::string(*)(int);
-constexpr Fptr toString = &std::to_string;
 
-#include "Sandbox/millis.h" // Include a custom millis function for sandbox environment
+#ifdef SANDBOX_ENVIRONMENT
+#pragma once
+
+#include "Sandbox/StringConversion.h"
+#include "Sandbox/millis.h"
 #include "Sandbox/Drawer.h"
 #endif
 

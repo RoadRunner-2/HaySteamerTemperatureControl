@@ -1,17 +1,15 @@
 #ifndef StateMachine_h
 #define StateMachine_h
 
-
-#ifdef SANDBOX_ENVIRONMENT
-#include <string> // Include the standard string library
-using String = std::string; // Define "String" as an alias for std::string
-// Define toString(int) as std::to_string
-using Fptr = std::string(*)(int);
-constexpr Fptr toString = &std::to_string;
-
-#include "Sandbox/Status.h" 
 #include <map>
 #include <functional>
+
+
+#ifdef SANDBOX_ENVIRONMENT
+#pragma once
+
+#include "Sandbox/StringConversion.h"
+#include "Sandbox/Status.h" 
 #endif
 
 #ifdef ARDUINO
@@ -20,8 +18,6 @@ using Fptr = std::string(*)(int);
 constexpr Fptr toString = String;
 
 #include <Arduino.h>
-#include <functional>
-#include <map>
 #include <Status.h>
 #endif
 

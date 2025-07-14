@@ -2,12 +2,9 @@
 #define PARAMETER_EDITOR_H
 
 #ifdef SANDBOX_ENVIRONMENT
-#include <string> // Include the standard string library
-using String = std::string; // Define "String" as an alias for std::string
-// Define toString(int) as std::to_string
-using Fptr = std::string(*)(int);
-constexpr Fptr toString = &std::to_string;
+#pragma once
 
+#include "Sandbox/StringConversion.h"
 #include "Sandbox/millis.h" // Include a custom millis function for sandbox environment
 #endif
 

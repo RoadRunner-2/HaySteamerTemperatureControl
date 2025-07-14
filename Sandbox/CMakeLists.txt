@@ -29,7 +29,7 @@ add_executable(Sandbox
     Sensor.h
     Status.h
     millis.h
-    ../TempProbe.h
+    StringConversion.h
     ../TaskScheduler.h
     ../StateMachine.h
     ../Services.h
