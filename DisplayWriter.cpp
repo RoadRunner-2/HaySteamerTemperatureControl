@@ -40,7 +40,7 @@ void DisplayWriter::updateLine(int lineNumber) {
     m_content[lineNumber] = m_lineProviders[lineNumber]();
 }
 
-void DisplayWriter::updateAllLines() {
+void DisplayWriter::update() {
     for (int i = 0; i <= 3; ++i) {
         updateLine(i);
     }

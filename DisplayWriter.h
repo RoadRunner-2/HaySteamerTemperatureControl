@@ -9,6 +9,7 @@
 #include "Sandbox/StringConversion.h"
 #include "Sandbox/millis.h"
 #include "Sandbox/Drawer.h"
+#include "Sandbox/CyclicModule.h"
 #endif
 
 #ifdef ARDUINO
@@ -19,12 +20,12 @@ using Fptr = std::string(*)(int);
 constexpr Fptr toString = String;
 
 // millis() is provided by the Arduino framework, no need to define it
-#include "Draw.h"
+#include "CyclicModule.h"
 #endif
 
 using Display126x64 = Drawer<4>;
 
-class DisplayWriter {
+class DisplayWriter : public CyclicModule {
 public:
     using ContentProvider = std::function<String()>;
     DisplayWriter(Display126x64* display);
@@ -45,7 +46,7 @@ public:
 	/// calls ContentProvider to update all lines and writes to hardware
     /// call cyclically
 	/// </summary>
-    void updateAllLines();
+    void update() override;
 
 private:
     String m_content[4];
