@@ -37,7 +37,7 @@ TEST(DisplayWriterTest, UpdateAllLinesCallsDrawerWithCorrectContent) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected[i]) return false;
         return true;
     })));
-    writer.updateAllLines();
+    writer.update();
 }
 
 TEST(DisplayWriterTest, SetLineProviderChangesContent) {
@@ -59,7 +59,7 @@ TEST(DisplayWriterTest, SetLineProviderChangesContent) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected1[i]) return false;
         return true;
     })));
-    writer.updateAllLines();
+    writer.update();
 
     // Change line 1 provider and update again
     writer.setLineProvider(1, newLine2);
@@ -68,7 +68,7 @@ TEST(DisplayWriterTest, SetLineProviderChangesContent) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected2[i]) return false;
         return true;
     })));
-    writer.updateAllLines();
+    writer.update();
 }
 
 TEST(DisplayWriterTest, InvalidLineProviderDoesNotCrash) {
@@ -105,7 +105,7 @@ TEST(DisplayWriterTest, ChangeToInvalidProviderExpectEmptyString) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected1[i]) return false;
         return true;
     })));
-    writer.updateAllLines();
+    writer.update();
 
     // Change line 1 provider to invalid and update again
     writer.setLineProvider(1, invalid);
@@ -114,5 +114,5 @@ TEST(DisplayWriterTest, ChangeToInvalidProviderExpectEmptyString) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected2[i]) return false;
         return true;
     })));
-    writer.updateAllLines();
+    writer.update();
 }
