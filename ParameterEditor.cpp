@@ -306,8 +306,15 @@ ParameterEditor::ParameterEditor()
     , temperature(20), timeSpan(30)
 { }
 
-void ParameterEditor::processKey(char key) 
+void ParameterEditor::setCharacterProvider(CharacterProvider provider)
 {
+	characterProvider = provider;
+}
+
+void ParameterEditor::update() 
+{
+	if (!characterProvider) return; // Ensure character provider is set
+    char key = characterProvider();
     displayFormatter.updateBlink();
 
     if (key >= 'A' && key <= 'C') {

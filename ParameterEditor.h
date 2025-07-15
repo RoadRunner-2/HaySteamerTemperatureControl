@@ -1,11 +1,14 @@
 #ifndef PARAMETER_EDITOR_H
 #define PARAMETER_EDITOR_H
 
+#include <functional>
+
 #ifdef SANDBOX_ENVIRONMENT
 #pragma once
 
 #include "Sandbox/StringConversion.h"
-#include "Sandbox/millis.h" // Include a custom millis function for sandbox environment
+#include "Sandbox/millis.h"
+#include "Sandbox/CyclicModule.h"
 #endif
 
 #ifdef ARDUINO
@@ -14,6 +17,7 @@ using Fptr = std::string(*)(int);
 constexpr Fptr toString = String;
 
 // millis() is provided by the Arduino framework, no need to define it
+#include <CyclicModule.h>
 #endif
 
     // Constants for parameter limits
@@ -133,7 +137,10 @@ constexpr Fptr toString = String;
         String formatSpanEdit(const char* inputBuffer, int inputPos);
     }; // class DisplayFormatter
 
-    class ParameterEditor {
+    class ParameterEditor :public CyclicModule {
+    public:
+        // Type definition for a character provider function
+			using CharacterProvider = std::function<char()>;
     private:
         // Parameter storage
         int timeHours;      // 0-23
@@ -147,14 +154,22 @@ constexpr Fptr toString = String;
         // add options for displaying parameters
         DisplayFormatter displayFormatter;
 
+		CharacterProvider characterProvider;
+
     public:
         ParameterEditor();
+
+		/// <summary>
+        /// Initializes the character provider for input handling.
+        /// </summary>
+		/// <param name="provider">A function that provides the next character input.</param>
+		void setCharacterProvider(CharacterProvider provider);
 
         /// <summary>
         /// Processes a single keyboard key input.
         /// </summary>
         /// <param name="key">The character representing the key to process.</param>
-        void processKey(char key);
+        void update () override ;
 
         /// <summary>
         /// Retrieves the display string.

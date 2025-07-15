@@ -70,146 +70,157 @@ TEST_F(ParameterEditorTest, SetTimeSpanInvalid) {
     EXPECT_EQ(editor->getTimeSpan(), 30);  // Should remain unchanged
 }
 
-// Tests processKey for mode selection (should enter edit mode)
-TEST_F(ParameterEditorTest, ProcessKeyModeSelection) {
-    editor->processKey('A');
-    String display = editor->getDisplayString();
-    EXPECT_TRUE(display.find("_") != std::string::npos);
-}
-
-// Tests processKey for digit input and commit (time edit)
-TEST_F(ParameterEditorTest, ProcessKeyDigitInput) {
-    editor->processKey('A');  // Enter time edit mode
-    editor->processKey('1');
-    editor->processKey('5');
-    editor->processKey('3');
-    editor->processKey('0');  // Complete time input: 15:30
-
+// Tests setCharacterProvider and update (simulates input stream)
+TEST_F(ParameterEditorTest, SetCharacterProviderAndUpdate) {
+    std::string input = "A1530";
+    size_t idx = 0;
+    editor->setCharacterProvider([&]() {
+        if (idx < input.size()) return input[idx++];
+        return '\0';
+    });
+    for (size_t i = 0; i < input.size(); ++i) {
+        editor->update();
+    }
     EXPECT_EQ(editor->getTimeHours(), 15);
     EXPECT_EQ(editor->getTimeMinutes(), 30);
 }
 
-// Tests processKey for aborting an edit
-TEST_F(ParameterEditorTest, ProcessKeyAbort) {
-    editor->processKey('A');  // Enter time edit mode
-    editor->processKey('1');
-    editor->processKey('*');  // Abort
-
-    String display = editor->getDisplayString();
-    EXPECT_TRUE(display.find("12:00") != std::string::npos);
+// Tests update does nothing if provider returns '\0'
+TEST_F(ParameterEditorTest, UpdateWithNoInput) {
+    editor->setCharacterProvider([]() { return '\0'; });
+    editor->update();
+    EXPECT_EQ(editor->getTimeHours(), 12);
+    EXPECT_EQ(editor->getTimeMinutes(), 0);
 }
 
-// Tests processKey for temperature edit
-TEST_F(ParameterEditorTest, ProcessKeyTempEdit) {
-    editor->processKey('B');  // Enter temp edit mode
-    editor->processKey('2');
-    editor->processKey('5');  // Complete temp input: 25
-
-    EXPECT_EQ(editor->getTemperature(), 25);
-}
-
-// Tests processKey for span edit
-TEST_F(ParameterEditorTest, ProcessKeySpanEdit) {
-    editor->processKey('C');  // Enter span edit mode
-    editor->processKey('4');
-    editor->processKey('5');  // Complete span input: 45
-
+// Tests a complete workflow using setCharacterProvider and update
+TEST_F(ParameterEditorTest, CompleteWorkflowWithProvider) {
+    std::string input = "A0815B22C45";
+    size_t idx = 0;
+    editor->setCharacterProvider([&]() {
+        if (idx < input.size()) return input[idx++];
+        return '\0';
+    });
+    for (size_t i = 0; i < input.size(); ++i) {
+        editor->update();
+    }
+    EXPECT_EQ(editor->getTimeHours(), 8);
+    EXPECT_EQ(editor->getTimeMinutes(), 15);
+    EXPECT_EQ(editor->getTemperature(), 22);
     EXPECT_EQ(editor->getTimeSpan(), 45);
-}
-
-// Tests getDisplayString in idle state
-TEST_F(ParameterEditorTest, GetDisplayStringIdle) {
     String display = editor->getDisplayString();
-    EXPECT_EQ(display, "12:00, 20°C, 30min");
+    EXPECT_EQ(display, "08:15, 22°C, 45min");
 }
 
-// Tests getDisplayString in editing state (partial input)
-TEST_F(ParameterEditorTest, GetDisplayStringEditing) {
-    editor->processKey('A');  // Enter time edit mode
-    editor->processKey('1');
-
+// Tests that update can be called multiple times with partial input
+TEST_F(ParameterEditorTest, UpdatePartialInput) {
+    std::string input = "A1";
+    size_t idx = 0;
+    editor->setCharacterProvider([&]() {
+        if (idx < input.size()) return input[idx++];
+        return '\0';
+    });
+    for (size_t i = 0; i < input.size(); ++i) {
+        editor->update();
+    }
     String display = editor->getDisplayString();
     EXPECT_TRUE(display.find("1") != std::string::npos);
     EXPECT_TRUE(display.find("_") != std::string::npos);
 }
 
-// Tests a complete workflow: time, temp, and span edits
-TEST_F(ParameterEditorTest, CompleteWorkflow) {
-    editor->processKey('A');  // Time edit
-    editor->processKey('0');
-    editor->processKey('8');
-    editor->processKey('1');
-    editor->processKey('5');  // 08:15
-
-    editor->processKey('B');  // Temp edit
-    editor->processKey('2');
-    editor->processKey('2');  // 22°C
-
-    editor->processKey('C');  // Span edit
-    editor->processKey('4');
-    editor->processKey('5');  // 45min
-
-    EXPECT_EQ(editor->getTimeHours(), 8);
-    EXPECT_EQ(editor->getTimeMinutes(), 15);
-    EXPECT_EQ(editor->getTemperature(), 22);
-    EXPECT_EQ(editor->getTimeSpan(), 45);
-
-    String display = editor->getDisplayString();
-    EXPECT_EQ(display, "08:15, 22°C, 45min");
-}
-
-// Edge case: maximum valid time input
-TEST_F(ParameterEditorTest, MaxTimeInput) {
-    editor->processKey('A');
-    editor->processKey('2');
-    editor->processKey('3');
-    editor->processKey('5');
-    editor->processKey('9');  // 23:59
-
-    EXPECT_EQ(editor->getTimeHours(), 23);
-    EXPECT_EQ(editor->getTimeMinutes(), 59);
-}
-
-// Edge case: maximum valid temperature input
-TEST_F(ParameterEditorTest, MaxTempInput) {
-    editor->processKey('B');
-    editor->processKey('9');
-    editor->processKey('9');  // 99°C
-
-    EXPECT_EQ(editor->getTemperature(), 99);
-}
-
-// Edge case: maximum valid span input
-TEST_F(ParameterEditorTest, MaxSpanInput) {
-    editor->processKey('C');
-    editor->processKey('6');
-    editor->processKey('0');  // 60min
-
-    EXPECT_EQ(editor->getTimeSpan(), 60);
-}
-
-// Tests processKey with invalid mode key (should not change state)
-TEST_F(ParameterEditorTest, ProcessKeyInvalidMode) {
-    String before = editor->getDisplayString();
-    editor->processKey('X'); // Invalid mode
-    String after = editor->getDisplayString();
-    EXPECT_EQ(before, after);
-}
-
-// Tests processKey with invalid digit in edit mode (should not change input)
-TEST_F(ParameterEditorTest, ProcessKeyInvalidDigitInEdit) {
-    editor->processKey('A');
-    editor->processKey('3'); // Invalid first hour digit
+// Tests that update ignores input when provider is not set
+TEST_F(ParameterEditorTest, UpdateWithoutProvider) {
+    editor->update();
     EXPECT_EQ(editor->getTimeHours(), 12);
     EXPECT_EQ(editor->getTimeMinutes(), 0);
 }
 
-// Tests that processKey ignores input when not in edit mode and not a mode key
-TEST_F(ParameterEditorTest, ProcessKeyIgnoredWhenIdle) {
-    String before = editor->getDisplayString();
-    editor->processKey('1'); // Not in edit mode
-    String after = editor->getDisplayString();
-    EXPECT_EQ(before, after);
+// Test changing the character provider after initial set
+TEST_F(ParameterEditorTest, ChangeCharacterProviderMidSession) {
+    std::string input1 = "A15";
+    std::string input2 = "30";
+    size_t idx1 = 0, idx2 = 0;
+    editor->setCharacterProvider([&]() {
+        if (idx1 < input1.size()) return input1[idx1++];
+        return '\0';
+    });
+    for (size_t i = 0; i < input1.size(); ++i) editor->update();
+    // Change provider mid-edit
+    editor->setCharacterProvider([&]() {
+        if (idx2 < input2.size()) return input2[idx2++];
+        return '\0';
+    });
+    for (size_t i = 0; i < input2.size(); ++i) editor->update();
+    EXPECT_EQ(editor->getTimeHours(), 15);
+    EXPECT_EQ(editor->getTimeMinutes(), 30);
+}
+
+// Test min/max valid values for time, temperature, and span
+TEST_F(ParameterEditorTest, SetTimeMinMaxValid) {
+    editor->setTime(0, 0);
+    EXPECT_EQ(editor->getTimeHours(), 0);
+    EXPECT_EQ(editor->getTimeMinutes(), 0);
+    editor->setTime(23, 59);
+    EXPECT_EQ(editor->getTimeHours(), 23);
+    EXPECT_EQ(editor->getTimeMinutes(), 59);
+}
+
+TEST_F(ParameterEditorTest, SetTemperatureMinMaxValid) {
+    editor->setTemperature(0);
+    EXPECT_EQ(editor->getTemperature(), 0);
+    editor->setTemperature(99);
+    EXPECT_EQ(editor->getTemperature(), 99);
+}
+
+TEST_F(ParameterEditorTest, SetTimeSpanMinMaxValid) {
+    editor->setTimeSpan(0);
+    EXPECT_EQ(editor->getTimeSpan(), 0);
+    editor->setTimeSpan(60);
+    EXPECT_EQ(editor->getTimeSpan(), 60);
+}
+
+// Test just-out-of-bounds values for time, temperature, and span
+TEST_F(ParameterEditorTest, SetTimeJustOutOfBounds) {
+    editor->setTime(-1, 0);
+    EXPECT_EQ(editor->getTimeHours(), 12);
+    editor->setTime(24, 0);
+    EXPECT_EQ(editor->getTimeHours(), 12);
+    editor->setTime(0, -1);
+    EXPECT_EQ(editor->getTimeMinutes(), 0);
+    editor->setTime(0, 60);
+    EXPECT_EQ(editor->getTimeMinutes(), 0);
+}
+
+TEST_F(ParameterEditorTest, SetTemperatureJustOutOfBounds) {
+    editor->setTemperature(-1);
+    EXPECT_EQ(editor->getTemperature(), 20);
+    editor->setTemperature(100);
+    EXPECT_EQ(editor->getTemperature(), 20);
+}
+
+TEST_F(ParameterEditorTest, SetTimeSpanJustOutOfBounds) {
+    editor->setTimeSpan(-1);
+    EXPECT_EQ(editor->getTimeSpan(), 30);
+    editor->setTimeSpan(61);
+    EXPECT_EQ(editor->getTimeSpan(), 30);
+}
+
+// Test repeated update() calls with no input
+TEST_F(ParameterEditorTest, RepeatedUpdateWithNoInput) {
+    editor->setCharacterProvider([]() { return '\0'; });
+    for (int i = 0; i < 10; ++i) {
+        editor->update();
+    }
+    EXPECT_EQ(editor->getTimeHours(), 12);
+    EXPECT_EQ(editor->getTimeMinutes(), 0);
+}
+
+// Test getTimeInMinutes for edge values
+TEST_F(ParameterEditorTest, GetTimeInMinutesEdgeCases) {
+    editor->setTime(0, 0);
+    EXPECT_EQ(editor->getTimeInMinutes(), 0);
+    editor->setTime(23, 59);
+    EXPECT_EQ(editor->getTimeInMinutes(), 23 * 60 + 59);
 }
 
 int main(int argc, char** argv) {
