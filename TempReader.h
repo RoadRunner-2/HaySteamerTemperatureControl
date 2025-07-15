@@ -7,6 +7,7 @@
 #include "Sandbox/StringConversion.h"
 #include "Sandbox/Sensor.h"
 #include "Sandbox/Status.h"
+#include "Sandbox/CyclicModule.h"
 
 #endif
 
@@ -17,11 +18,12 @@ constexpr Fptr toString = String;
 
 #include <Sensor.h>
 #include <Status.h>
+#include <CyclicModule.h>
 #endif
 
 using TempSensor = Sensor<int>;
 
-class TempReader {
+class TempReader : public CyclicModule {
 public:
     // No interval parameter needed anymore
     TempReader(TempSensor* sensor)
@@ -32,7 +34,7 @@ public:
 	/// This function updates the lastValue with the current sensor reading
 	/// It should be called periodically to keep the lastValue updated.
 	/// </summary>
-    void update() {
+    void update() override {
         lastValue = sensor->read();
     }
 

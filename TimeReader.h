@@ -8,6 +8,7 @@
 #include "Sandbox/millis.h"
 #include "Sandbox/Sensor.h"
 #include "Sandbox/Status.h"
+#include "Sandbox/CyclicModule.h"
 #endif
 
 #ifdef ARDUINO
@@ -18,17 +19,18 @@ constexpr Fptr toString = String;
 // millis() is provided by the Arduino framework, no need to define it
 #include <Sensor.h>
 #include <Status.h>
+#include <CyclicModule.h>
 #endif
 
 using NTPClock = Sensor<time_t>;
 
-class TimeReader {
+class TimeReader : public CyclicModule {
 public:
     TimeReader(NTPClock* clock);
 
     /// Updates the lastValue with the current ntp time
     /// It should be called periodically to keep the lastValue updated.
-    void update();
+    void update() override;
 
     /// Returns the time of day in minutes converted from the last read of the ntp clock
     /// <returns>time of day in minutes</returns>
