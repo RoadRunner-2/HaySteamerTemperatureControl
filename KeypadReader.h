@@ -31,7 +31,7 @@ public:
     }
 
     /// <summary>
-    /// This function updates the lastValue with the current sensor reading
+    /// This function updates the lastValue
     /// It should be called periodically to keep the lastValue updated.
     /// </summary>
     void update() override {
@@ -39,9 +39,9 @@ public:
     }
 
     /// <summary>
-    /// Returns the last read temperature value in °C.
+	/// Returns the last read character from the keypad.
     /// </summary>
-    /// <returns>Last temperature value in °C.</returns>
+    /// <returns>character from keypad</returns>
     char getLatestValue() const {
         return lastValue;
     }
