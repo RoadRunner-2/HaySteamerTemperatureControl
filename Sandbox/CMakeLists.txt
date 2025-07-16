@@ -46,6 +46,7 @@ add_executable(Sandbox
     ../DisplayWriter.h
     ../DisplayWriter.cpp
     ../KeypadReader.h
+    ../StartConditions.h
 )
 
 target_compile_definitions(Sandbox PRIVATE SANDBOX_ENVIRONMENT)
@@ -67,6 +68,7 @@ add_executable(UnitTests
     SandboxTests/Test_DisplayWriter.cpp
     SandboxTests/Test_KeypadReader.cpp
     SandboxTests/Test_StateMachine.cpp
+    SandboxTests/Test_StartConditions.cpp
     SandboxTests/pch.h # Add this if you use precompiled headers
     ../ParameterEditor.cpp
     ../Sensor.h
@@ -75,6 +77,7 @@ add_executable(UnitTests
     ../DisplayWriter.cpp
     ../KeypadReader.h
     ../StateMachine.h
+    ../StartConditions.h
 )
 
 # Add include directories for UnitTests if needed
