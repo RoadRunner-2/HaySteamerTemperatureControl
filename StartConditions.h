@@ -2,6 +2,7 @@
 #define STARTCONDITIONS_H
 
 #include <functional>
+#include <vector> // Ensure vector is included
 
 #ifdef SANDBOX_ENVIRONMENT
 #pragma once
@@ -16,7 +17,26 @@ class StartConditions
 {
 public:
 	using ConditionFunction = std::function<bool()>;
-	StartConditions() = default;
+	StartConditions()
+	{
+		// default start condition is always the timer
+		addCondition(startTimer);
+	};
+
+	void setGetTimeOfDayInMinutes(std::function<unsigned long()> func) 
+	{
+		if (!func) {
+			return;
+		}
+		getTimeOfDayInMinutes = func;
+	}
+	void setGetStartTimeInMinutes(std::function<unsigned long()> func) 
+	{
+		if (!func) {
+			return;
+		}
+		getStartTimeInMinutes = func;
+	}
 
 	/// <summary>
 	///	add condition to the list of conditions.
@@ -44,5 +64,9 @@ public:
 
 private:
 	std::vector<ConditionFunction> conditions;
+
+	std::function<unsigned long()> getTimeOfDayInMinutes = []() {return 0; };
+	std::function<unsigned long()> getStartTimeInMinutes = []() {return 0; };
+	ConditionFunction startTimer = [&]() { return (getTimeOfDayInMinutes() >= getStartTimeInMinutes()); };
 };
 #endif

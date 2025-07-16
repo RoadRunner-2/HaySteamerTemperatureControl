@@ -54,3 +54,27 @@ TEST_F(StartConditionsTest, MultipleTrueConditionsReturnsTrue) {
     conditions.addCondition([] { return true; });
     EXPECT_TRUE(conditions.checkAllConditions());
 }
+
+// Test: setGetTimeOfDayInMinutes and setGetStartTimeInMinutes can be used to create a start condition
+TEST_F(StartConditionsTest, StartTimerConditionWorks) {
+    int time = 500;
+    int start = 400;
+    conditions.setGetTimeOfDayInMinutes([&] { return time; });
+    conditions.setGetStartTimeInMinutes([&] { return start; });
+
+    // Add the default startTimer condition
+    conditions.addCondition([&] {
+        // This mimics the default startTimer logic
+        return time >= start;
+        });
+
+    EXPECT_TRUE(conditions.checkAllConditions());
+
+    // Now time < start
+    time = 399;
+    EXPECT_FALSE(conditions.checkAllConditions());
+
+    // Edge: time == start
+    time = 400;
+    EXPECT_TRUE(conditions.checkAllConditions());
+}
