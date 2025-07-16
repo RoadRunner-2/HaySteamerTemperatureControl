@@ -9,25 +9,16 @@
 #pragma once
 
 #include "Sandbox/StringConversion.h"
-
+#include "Sandbox/Status.h"
 #endif
 
 #ifdef ARDUINO
-
+#include "Status.h"
 #endif
 
 class FaultConditions {
 public:
-	using FaultCondition = std::function<bool()>;
-
-	/// <summary>
-	/// Sets the default message using the provided function if it is valid.
-	/// </summary>
-	/// <param name="message">A function that returns a String to be used as the default message.</param>
-	void addDefaultMessage(const std::function<String()>& message) {
-		if (!message) return;
-		defaultMessage = message;
-	}
+	using FaultCondition = std::function<bool(Status)>;
 
 	/// <summary>
 	/// Adds a fault condition and its associated message to the conditions list if the condition is valid.
@@ -43,16 +34,15 @@ public:
 	/// Checks all fault conditions and returns the message of the first condition that is met.
 	/// </summary>
 	/// <returns>The message of the first met condition, or the default message if none are met.</returns>
-	String checkConditions() const {
+	String checkConditions(Status state) const {
 		for (const auto& [fault, msg] : conditions) {
-			if (fault()) return msg;
+			if (fault(state)) return msg;
 		}
-		return defaultMessage();
+		return "";
 	}
 
 private:
 	std::vector<std::pair<FaultCondition, std::string>> conditions;
-	std::function<String()> defaultMessage = [](){ return ""; };
 };
 
 #endif

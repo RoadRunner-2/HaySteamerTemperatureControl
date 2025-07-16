@@ -12,67 +12,62 @@ protected:
 
 // No conditions, default message is empty
 TEST_F(FaultConditionsTest, NoConditionsReturnsDefaultMessage) {
-    EXPECT_EQ(faults.checkConditions(), "");
-}
-
-// No conditions, custom default message
-TEST_F(FaultConditionsTest, CustomDefaultMessageIsReturned) {
-    faults.addDefaultMessage([]() { return String("Default"); });
-    EXPECT_EQ(faults.checkConditions(), "Default");
+    EXPECT_EQ(faults.checkConditions(Status::idle), "");
 }
 
 // Single condition true, returns its message
 TEST_F(FaultConditionsTest, SingleTrueConditionReturnsMessage) {
-    faults.addCondition([] { return true; }, "Fault1");
-    faults.addDefaultMessage([]() { return String("Default"); });
-    EXPECT_EQ(faults.checkConditions(), "Fault1");
+    faults.addCondition([](Status) { return true; }, "Fault1");
+    EXPECT_EQ(faults.checkConditions(Status::idle), "Fault1");
 }
 
 // Single condition false, returns default message
 TEST_F(FaultConditionsTest, SingleFalseConditionReturnsDefault) {
-    faults.addCondition([] { return false; }, "Fault1");
-    faults.addDefaultMessage([]() { return String("Default"); });
-    EXPECT_EQ(faults.checkConditions(), "Default");
+    faults.addCondition([](Status) { return false; }, "Fault1");
+    EXPECT_EQ(faults.checkConditions(Status::idle), "");
 }
 
 // Multiple conditions, first true is returned
 TEST_F(FaultConditionsTest, MultipleConditionsFirstTrueReturned) {
-    faults.addCondition([] { return false; }, "Fault1");
-    faults.addCondition([] { return true; }, "Fault2");
-    faults.addCondition([] { return true; }, "Fault3");
-    faults.addDefaultMessage([]() { return String("Default"); });
-    EXPECT_EQ(faults.checkConditions(), "Fault2");
+    faults.addCondition([](Status) { return false; }, "Fault1");
+    faults.addCondition([](Status) { return true; }, "Fault2");
+    faults.addCondition([](Status) { return true; }, "Fault3");
+    EXPECT_EQ(faults.checkConditions(Status::idle), "Fault2");
 }
 
 // Multiple conditions, all false, returns default
 TEST_F(FaultConditionsTest, MultipleConditionsAllFalseReturnsDefault) {
-    faults.addCondition([] { return false; }, "Fault1");
-    faults.addCondition([] { return false; }, "Fault2");
-    faults.addDefaultMessage([]() { return String("Default"); });
-    EXPECT_EQ(faults.checkConditions(), "Default");
+    faults.addCondition([](Status) { return false; }, "Fault1");
+    faults.addCondition([](Status) { return false; }, "Fault2");
+    EXPECT_EQ(faults.checkConditions(Status::idle), "");
 }
 
 // Add null condition, should be ignored
 TEST_F(FaultConditionsTest, AddNullConditionIgnored) {
     int callCount = 0;
     faults.addCondition(nullptr, "Fault1");
-    faults.addCondition([&] { ++callCount; return false; }, "Fault2");
-    faults.addDefaultMessage([]() { return String("Default"); });
-    faults.checkConditions();
+    faults.addCondition([&](Status) { ++callCount; return false; }, "Fault2");
+    faults.checkConditions(Status::idle);
     EXPECT_EQ(callCount, 1);
-}
-
-// Add null default message, should not change default
-TEST_F(FaultConditionsTest, AddNullDefaultMessageIgnored) {
-    faults.addDefaultMessage(nullptr);
-    EXPECT_EQ(faults.checkConditions(), "");
 }
 
 // Multiple calls to checkConditions, state is preserved
 TEST_F(FaultConditionsTest, MultipleCallsPreserveState) {
-    faults.addCondition([] { return false; }, "Fault1");
-    faults.addDefaultMessage([]() { return String("Default"); });
-    EXPECT_EQ(faults.checkConditions(), "Default");
-    faults.addCondition([] { return true; }, "Fault2");
-    EXPECT_EQ(faults.checkConditions(), "Fault2");
+    faults.addCondition([](Status) { return false; }, "Fault1");
+    EXPECT_EQ(faults.checkConditions(Status::idle), "Default");
+    faults.addCondition([](Status) { return true; }, "Fault2");
+    EXPECT_EQ(faults.checkConditions(Status::idle), "Fault2");
+}
+
+TEST_F(FaultConditionsTest, ConditionTrueForSpecificStates) {
+    // Condition returns true only for heating and holding
+    faults.addCondition([](Status s) {
+        return s == Status::heating || s == Status::holding;
+        }, "Active");
+
+    EXPECT_EQ(faults.checkConditions(Status::idle), "");
+    EXPECT_EQ(faults.checkConditions(Status::heating), "Active");
+    EXPECT_EQ(faults.checkConditions(Status::holding), "Active");
+    EXPECT_EQ(faults.checkConditions(Status::done), "");
+    EXPECT_EQ(faults.checkConditions(Status::error), "");
 }
