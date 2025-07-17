@@ -46,6 +46,7 @@ add_executable(Sandbox
     ../DisplayWriter.h
     ../DisplayWriter.cpp
     ../KeypadReader.h
+    ../HaySteamerLogic.h
     ../StartConditions.h
     ../FaultConditions.h
 )
@@ -71,6 +72,7 @@ add_executable(UnitTests
     SandboxTests/Test_StateMachine.cpp
     SandboxTests/Test_StartConditions.cpp
     SandboxTests/Test_FaultConditions.cpp
+    SandboxTests/Test_HaySteamerLogic.cpp
     SandboxTests/pch.h # Add this if you use precompiled headers
     ../ParameterEditor.cpp
     ../Sensor.h
@@ -81,6 +83,7 @@ add_executable(UnitTests
     ../StateMachine.h
     ../StartConditions.h
     ../FaultConditions.h
+    ../HaySteamerLogic.h
 )
 
 # Add include directories for UnitTests if needed
