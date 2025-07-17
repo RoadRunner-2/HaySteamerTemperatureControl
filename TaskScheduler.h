@@ -92,7 +92,7 @@ struct FastInputTask : public CyclicTask {
         }
 	}
     
-	volatile bool enabled = true;
+	volatile bool enabled = false;
 };
 
 struct OutputTask : public CyclicTask {
