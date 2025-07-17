@@ -18,10 +18,7 @@ class StartConditions
 public:
 	using ConditionFunction = std::function<bool()>;
 	StartConditions()
-	{
-		// default start condition is always the timer
-		addCondition(startTimer);
-	};
+	{ };
 
 	void setGetTimeOfDayInMinutes(std::function<unsigned long()> func) 
 	{
@@ -62,11 +59,19 @@ public:
 		return conditionMet;
 	}
 
+	/// <summary>
+	///	check if the timer condition is met, i.e., if the current time of day is greater than or equal to the start time.
+	/// </summary>
+	/// <returns>true if the timer condition is met, false otherwise</returns>
+	bool timerCondition() const 
+	{
+		return (getTimeOfDayInMinutes() >= getStartTimeInMinutes());
+	}
+
 private:
 	std::vector<ConditionFunction> conditions;
 
 	std::function<unsigned long()> getTimeOfDayInMinutes = []() {return 0; };
 	std::function<unsigned long()> getStartTimeInMinutes = []() {return 0; };
-	ConditionFunction startTimer = [&]() { return (getTimeOfDayInMinutes() >= getStartTimeInMinutes()); };
 };
 #endif

@@ -7,7 +7,34 @@ protected:
     StartConditions conditions;
 };
 
-// Test: No conditions added, checkAllConditions should return false
+// Test: timerCondition returns false if time < start
+TEST_F(StartConditionsTest, TimerConditionFalse) {
+    int time = 100;
+    int start = 200;
+    conditions.setGetTimeOfDayInMinutes([&] { return time; });
+    conditions.setGetStartTimeInMinutes([&] { return start; });
+    EXPECT_FALSE(conditions.timerCondition());
+}
+
+// Test: timerCondition returns true if time >= start
+TEST_F(StartConditionsTest, TimerConditionTrue) {
+    int time = 300;
+    int start = 200;
+    conditions.setGetTimeOfDayInMinutes([&] { return time; });
+    conditions.setGetStartTimeInMinutes([&] { return start; });
+    EXPECT_TRUE(conditions.timerCondition());
+}
+
+// Test: timerCondition returns true if time == start
+TEST_F(StartConditionsTest, TimerConditionEdge) {
+    int time = 200;
+    int start = 200;
+    conditions.setGetTimeOfDayInMinutes([&] { return time; });
+    conditions.setGetStartTimeInMinutes([&] { return start; });
+    EXPECT_TRUE(conditions.timerCondition());
+}
+
+// Test: checkAllConditions returns false if no conditions are added
 TEST_F(StartConditionsTest, NoConditionsReturnsFalse) {
     EXPECT_FALSE(conditions.checkAllConditions());
 }
@@ -48,33 +75,9 @@ TEST_F(StartConditionsTest, AddEmptyConditionIgnored) {
     EXPECT_EQ(callCount, 1);
 }
 
-// Test: Add multiple conditions, all true
+// Test: Multiple true conditions
 TEST_F(StartConditionsTest, MultipleTrueConditionsReturnsTrue) {
     conditions.addCondition([] { return true; });
     conditions.addCondition([] { return true; });
-    EXPECT_TRUE(conditions.checkAllConditions());
-}
-
-// Test: setGetTimeOfDayInMinutes and setGetStartTimeInMinutes can be used to create a start condition
-TEST_F(StartConditionsTest, StartTimerConditionWorks) {
-    int time = 500;
-    int start = 400;
-    conditions.setGetTimeOfDayInMinutes([&] { return time; });
-    conditions.setGetStartTimeInMinutes([&] { return start; });
-
-    // Add the default startTimer condition
-    conditions.addCondition([&] {
-        // This mimics the default startTimer logic
-        return time >= start;
-        });
-
-    EXPECT_TRUE(conditions.checkAllConditions());
-
-    // Now time < start
-    time = 399;
-    EXPECT_FALSE(conditions.checkAllConditions());
-
-    // Edge: time == start
-    time = 400;
     EXPECT_TRUE(conditions.checkAllConditions());
 }
