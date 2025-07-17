@@ -70,6 +70,10 @@ add_executable(UnitTests
     SandboxTests/Test_DisplayWriter.cpp
     SandboxTests/Test_KeypadReader.cpp
     SandboxTests/Test_StateMachine.cpp
+    SandboxTests/Test_CyclicCaller.cpp
+    SandboxTests/Test_CyclicTask.cpp
+    SandboxTests/Test_FastInputTask.cpp
+    SandboxTests/Test_OutputTask.cpp
     SandboxTests/Test_StartConditions.cpp
     SandboxTests/Test_FaultConditions.cpp
     SandboxTests/Test_HaySteamerLogic.cpp
@@ -81,6 +85,7 @@ add_executable(UnitTests
     ../DisplayWriter.cpp
     ../KeypadReader.h
     ../StateMachine.h
+    ../TaskScheduler.h
     ../StartConditions.h
     ../FaultConditions.h
     ../HaySteamerLogic.h

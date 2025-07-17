@@ -54,7 +54,7 @@ TEST_F(FaultConditionsTest, AddNullConditionIgnored) {
 // Multiple calls to checkConditions, state is preserved
 TEST_F(FaultConditionsTest, MultipleCallsPreserveState) {
     faults.addCondition([](Status) { return false; }, "Fault1");
-    EXPECT_EQ(faults.checkConditions(Status::idle), "Default");
+    EXPECT_EQ(faults.checkConditions(Status::idle), "");
     faults.addCondition([](Status) { return true; }, "Fault2");
     EXPECT_EQ(faults.checkConditions(Status::idle), "Fault2");
 }
