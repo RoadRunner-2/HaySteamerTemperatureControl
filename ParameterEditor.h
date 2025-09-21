@@ -12,12 +12,11 @@
 #endif
 
 #ifdef ARDUINO
-// Define toString(int) as String(int)
-using Fptr = std::string(*)(int);
-constexpr Fptr toString = String;
-
-// millis() is provided by the Arduino framework, no need to define it
+#include <Arduino.h>
 #include <CyclicModule.h>
+
+#define toString(x) String(x)
+
 #endif
 
     // Constants for parameter limits

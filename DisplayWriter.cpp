@@ -49,14 +49,14 @@ void DisplayWriter::update() {
 
 void DisplayWriter::clearAllLines() {
     for (int i = 0; i <= 3; ++i) {
-        m_content[i].clear();
+        m_content[i] = "";
     }
 
     display->write(m_content);
 }
 
 void DisplayWriter::clearLine(int lineNumber) {
-    m_content[lineNumber].clear();
+    m_content[lineNumber] = "";
 }
 
 bool DisplayWriter::isValidLineNumber(int lineNumber) const {

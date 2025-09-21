@@ -33,10 +33,7 @@ add_executable(Sandbox
     StringConversion.h
     ../TaskScheduler.h
     ../StateMachine.h
-    ../Services.h
     ../Parameter.h
-    ../Keypad.h
-    ../Display.h
     ../ParameterEditor.h
     ../ParameterEditor.cpp
     ../TempReader.h

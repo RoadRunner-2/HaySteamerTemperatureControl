@@ -15,12 +15,9 @@
 #ifdef ARDUINO
 #include <string>
 #include <functional>
-// Define toString(int) as String(int)
-using Fptr = std::string(*)(int);
-constexpr Fptr toString = String;
-
 // millis() is provided by the Arduino framework, no need to define it
-#include "CyclicModule.h"
+#include <CyclicModule.h>
+#include <Arduino.h>
 #endif
 
 using Display126x64 = Drawer<4>;

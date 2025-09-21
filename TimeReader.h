@@ -12,14 +12,11 @@
 #endif
 
 #ifdef ARDUINO
-// Define toString(int) as String(int)
-using Fptr = std::string(*)(int);
-constexpr Fptr toString = String;
-
-// millis() is provided by the Arduino framework, no need to define it
 #include <Sensor.h>
 #include <Status.h>
 #include <CyclicModule.h>
+#include <TimeLib.h>
+#include <Arduino.h>
 #endif
 
 using NTPClock = Sensor<time_t>;

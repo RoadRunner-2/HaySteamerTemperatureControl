@@ -12,10 +12,6 @@
 #endif
 
 #ifdef ARDUINO
-// Define toString(int) as String(int)
-using Fptr = std::string(*)(int);
-constexpr Fptr toString = String;
-
 #include <Sensor.h>
 #include <Status.h>
 #include <CyclicModule.h>
