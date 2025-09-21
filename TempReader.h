@@ -35,22 +35,24 @@ public:
     }
 
 	/// <summary>
-	/// Returns the last read temperature value in °C.
+	/// Returns the last read temperature value in C.
 	/// </summary>
-	/// <returns>Last temperature value in °C.</returns>
+	/// <returns>Last temperature value in C.</returns>
     int getLatestValue() const {
         return lastValue;
     }
 
 	/// <summary>
-	/// Get the latest value as string ("TTT°C"), always 6 characters long,
-	/// where TTT is the temperature in °C.
+	/// Get the latest value as string ("TTTC"), always 6 characters long,
+	/// where TTT is the temperature in C.
 	/// </summary>
 	/// <returns>String representation of the last temperature value.</returns>
     String getDisplayString() const {
-        char buf[8];
-        snprintf(buf, sizeof(buf), "%3d°C", lastValue);
-        return String(buf);
+        String result = "";
+		if (lastValue < 10) result += "  ";
+		else if (lastValue < 100) result += " ";
+        result += toString(lastValue) + "C";
+        return result;
     }
 
 private:

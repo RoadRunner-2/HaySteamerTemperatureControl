@@ -183,24 +183,14 @@ bool ManualEditor::isEditingComplete() const
 
 
 DisplayFormatter::DisplayFormatter()
-    : lastBlinkTime(0), blinkState(false)
 {
-};
-
-void DisplayFormatter::updateBlink() 
-{
-    unsigned long currentTime = millis();
-    if (currentTime - lastBlinkTime >= 1000) {
-        blinkState = !blinkState;
-        lastBlinkTime = currentTime;
-    }
 };
 
 String DisplayFormatter::formatIdleDisplay(int hours, int minutes, int temp, int span) 
 {
     String timeStr = (hours < 10 ? "0" : "") + toString(hours) + ":" +
         (minutes < 10 ? "0" : "") + toString(minutes);
-    String tempStr = toString(temp) + "°C";
+    String tempStr = toString(temp) + "C";
     String spanStr = toString(span) + "min";
 
     return timeStr + ", " + tempStr + ", " + spanStr;
@@ -216,21 +206,21 @@ String DisplayFormatter::formatEditDisplay(ManualEditor::EditMode mode, const ch
     switch (mode) {
     case ManualEditor::TIME_EDIT:
         timeStr = formatTimeEdit(inputBuffer, inputPos);
-        tempStr = toString(temp) + "°C";
+        tempStr = toString(temp) + "C";
         spanStr = toString(span) + "min";
         break;
 
     case ManualEditor::TEMP_EDIT:
         timeStr = (hours < 10 ? "0" : "") + toString(hours) + ":" +
             (minutes < 10 ? "0" : "") + toString(minutes);
-        tempStr = formatTempEdit(inputBuffer, inputPos) + "°C";
+        tempStr = formatTempEdit(inputBuffer, inputPos) + "C";
         spanStr = toString(span) + "min";
         break;
 
     case ManualEditor::SPAN_EDIT:
         timeStr = (hours < 10 ? "0" : "") + toString(hours) + ":" +
             (minutes < 10 ? "0" : "") + toString(minutes);
-        tempStr = toString(temp) + "°C";
+        tempStr = toString(temp) + "C";
         spanStr = formatSpanEdit(inputBuffer, inputPos) + "min";
         break;
     }
@@ -249,7 +239,7 @@ String DisplayFormatter::formatTimeEdit(const char* inputBuffer, int inputPos)
             result += inputBuffer[i];
         }
         else if (i == inputPos) {
-            result += blinkState ? "_" : " ";
+            result += "_";
         }
         else {
             result += "_";
@@ -269,7 +259,7 @@ String DisplayFormatter::formatTempEdit(const char* inputBuffer, int inputPos)
             result += inputBuffer[i];
         }
         else if (i == inputPos) {
-            result += blinkState ? "_" : " ";
+            result += "_";
         }
         else {
             result += "_";
@@ -289,7 +279,7 @@ String DisplayFormatter::formatSpanEdit(const char* inputBuffer, int inputPos)
             result += inputBuffer[i];
         }
         else if (i == inputPos) {
-            result += blinkState ? "_" : " ";
+            result += "_";
         }
         else {
             result += "_";
@@ -315,7 +305,6 @@ void ParameterEditor::update()
 {
 	if (!characterProvider) return; // Ensure character provider is set
     char key = characterProvider();
-    displayFormatter.updateBlink();
 
     if (key >= 'A' && key <= 'C') {
         // Mode selection keys
@@ -334,7 +323,6 @@ void ParameterEditor::update()
 };
 
 String ParameterEditor::getDisplayString() {
-    displayFormatter.updateBlink();
 
     if (manualEditor.getCurrentMode() == ManualEditor::NONE) {
         return displayFormatter.formatIdleDisplay(timeHours, timeMinutes, temperature, timeSpan);

@@ -17,7 +17,7 @@ TEST(TempReaderTest, ReturnsInitialValueBeforeUpdate) {
 
     // Before update, lastValue should be 0
     EXPECT_EQ(reader.getLatestValue(), 0);
-    EXPECT_EQ(reader.getDisplayString(), "  0°C");
+    EXPECT_EQ(reader.getDisplayString(), "  0C");
 }
 
 TEST(TempReaderTest, UpdatesValueFromSensor) {
@@ -29,7 +29,7 @@ TEST(TempReaderTest, UpdatesValueFromSensor) {
 
     reader.update();
     EXPECT_EQ(reader.getLatestValue(), 23);
-    EXPECT_EQ(reader.getDisplayString(), " 23°C");
+    EXPECT_EQ(reader.getDisplayString(), " 23C");
 }
 
 TEST(TempReaderTest, UpdatesValueMultipleTimes) {
@@ -42,9 +42,9 @@ TEST(TempReaderTest, UpdatesValueMultipleTimes) {
 
     reader.update();
     EXPECT_EQ(reader.getLatestValue(), 15);
-    EXPECT_EQ(reader.getDisplayString(), " 15°C");
+    EXPECT_EQ(reader.getDisplayString(), " 15C");
 
     reader.update();
     EXPECT_EQ(reader.getLatestValue(), -5);
-    EXPECT_EQ(reader.getDisplayString(), " -5°C");
+    EXPECT_EQ(reader.getDisplayString(), " -5C");
 }

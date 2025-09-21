@@ -109,7 +109,7 @@ TEST_F(ParameterEditorTest, CompleteWorkflowWithProvider) {
     EXPECT_EQ(editor->getTemperature(), 22);
     EXPECT_EQ(editor->getTimeSpan(), 45);
     String display = editor->getDisplayString();
-    EXPECT_EQ(display, "08:15, 22°C, 45min");
+    EXPECT_EQ(display, "08:15, 22C, 45min");
 }
 
 // Tests that update can be called multiple times with partial input

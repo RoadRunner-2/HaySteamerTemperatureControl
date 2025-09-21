@@ -94,19 +94,12 @@
 	}; // class ManualEditor
 
     class DisplayFormatter {
-    private:
-        unsigned long lastBlinkTime;
-        bool blinkState;
-
+    
     public:
         DisplayFormatter();
 
 		// Interface to ParameterEditor
 
-        /// <summary>
-        /// Updates the state of the blinkState using millis().
-        /// </summary>
-        void updateBlink();
         /// <summary>
         /// Formats a string for the idle (non-editing) display using the provided time and temperature values.
         /// </summary>
@@ -114,7 +107,7 @@
         /// <param name="minutes">The number of minutes to display.</param>
         /// <param name="temp">The temperature value to display.</param>
         /// <param name="span">The time span value to display.</param>
-        /// <returns>A formatted string representing the idle display in the format "HH:MM, TT°C, SSmin"</returns>
+        /// <returns>A formatted string representing the idle display in the format "HH:MM, TTï¿½C, SSmin"</returns>
         String formatIdleDisplay(int hours, int minutes, int temp, int span);
         /// <summary>
         /// Formats and returns a string representation of the current edit state for display purposes.
@@ -126,7 +119,7 @@
         /// <param name="minutes">The current value of the minutes field.</param>
         /// <param name="temp">The current value of the temperature field.</param>
         /// <param name="span">The current value of the span field.</param>
-        /// <returns>A formatted string representing the current edit state for display in the format "HH:MM, TT°C, SSmin".</returns>
+        /// <returns>A formatted string representing the current edit state for display in the format "HH:MM, TTï¿½C, SSmin".</returns>
         String formatEditDisplay(ManualEditor::EditMode mode, const char* inputBuffer, int inputPos,
             int hours, int minutes, int temp, int span);
 
