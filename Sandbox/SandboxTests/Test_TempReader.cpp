@@ -7,7 +7,6 @@
 class MockSensor : public Sensor<int> {
 public:
     MOCK_METHOD(int, read, (), (override));
-    MOCK_METHOD(void, initialize, (), (override));
 };
 
 using ::testing::Return;

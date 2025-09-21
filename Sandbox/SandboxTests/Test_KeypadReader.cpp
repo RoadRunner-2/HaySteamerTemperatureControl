@@ -6,7 +6,6 @@
 class MockKeypad : public Sensor<char> {
 public:
     MOCK_METHOD(char, read, (), (override));
-    MOCK_METHOD(void, initialize, (), (override));
 };
 
 using ::testing::Return;

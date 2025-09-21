@@ -13,7 +13,6 @@ public:
     FakeClock() : timeStamp(0) {}
     void set(unsigned long timeStamp_s) { timeStamp = timeStamp_s; }
     time_t read() override { return timeStamp; }
-    void initialize() override {}
 private:
     unsigned long timeStamp;
 };
@@ -23,7 +22,6 @@ public:
     FakeTemp() : temp(20) {}
     void set(int t) { temp = t; }
     int read() override { return temp; }
-    void initialize() override {}
 private:
     int temp;
 };
@@ -31,7 +29,6 @@ private:
 class FakeKeypad : public Sensor<char> {
 public:
     char read() override { return 'A'; }
-    void initialize() override {}
 };
 
 class MockDrawer : public Drawer<4> {

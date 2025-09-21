@@ -7,7 +7,6 @@ using ::testing::Return;
 class MockNTPClock : public Sensor<time_t> {
 public:
     MOCK_METHOD(time_t, read, (), (override));
-    MOCK_METHOD(void, initialize, (), (override));
 };
 
 TEST(TimeReaderTest, ReturnsMidnight) {
