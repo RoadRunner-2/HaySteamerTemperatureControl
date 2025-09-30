@@ -7,6 +7,8 @@
 #include "ParameterEditor.h"
 #include "KeypadReader.h"
 #include "DisplayWriter.h"
+#include "RelayWriter.h"
+#include "LEDWriter.h"
 #include "HaySteamerLogic.h"
 #include "StartConditions.h"
 #include "FaultConditions.h"
@@ -21,7 +23,7 @@
 #include "Sandbox/StringConversion.h"
 #include "Sandbox/millis.h"
 #include "Sandbox/Sensor.h"
-#include "Sandbox/Drawer.h"
+#include "Sandbox/Actor.h"
 #endif
 
 #ifdef ARDUINO
@@ -31,7 +33,7 @@ constexpr Fptr toString = String;
 
 // millis() is provided by the Arduino framework, no need to define it
 #include "Sensor.h"
-#include "Drawer.h"
+#include "Actor.h"
 #endif
 
 struct CyclicTask {
@@ -151,7 +153,7 @@ struct LogicTask : public CyclicTask {
 class CyclicCaller
 {
 public:
-    CyclicCaller(Sensor<time_t>* clock, Sensor<int>* temp, Sensor<char>* keypad, Drawer<4>* display)
+    CyclicCaller(Sensor<time_t>* clock, Sensor<int>* temp, Sensor<char>* keypad, Actor<String[4]>* display, Actor<byte>* relay, Actor<Status>* led)
         : slowInputTask(1000)
         , fastInputTask(100)
         , logicTask(2000)
@@ -160,6 +162,8 @@ public:
 		, tempReader(temp)
 		, keypadReader(keypad)
 		, display(display)
+		, relay(relay)
+		, led(led)
     {
     };
 
@@ -175,6 +179,9 @@ public:
 		fastInputTask.addModule(&parameterEditor);
         logicTask.addModule(&logic);
 		outputTask.addModule(&display);
+		outputTask.addModule(&relay);
+		outputTask.addModule(&led);
+
 
 		ParameterEditor::CharacterProvider characterProvider = [&] { return keypadReader.getLatestValue(); };
 		parameterEditor.setCharacterProvider(characterProvider);
@@ -196,6 +203,8 @@ public:
         DisplayWriter::ContentProvider line3 = [&] { return tempReader.getDisplayString(); };
 		DisplayWriter::ContentProvider line4 = [&] { return parameterEditor.getDisplayString(); };
         display.setAllProvider(line1, line2, line3, line4);
+        relay.setProvider([&] { return byte{ ((logic.getCurrentStatus() == Status::heating) || (logic.getCurrentStatus() == holding)) }; });
+		led.setProvider([&] { return logic.getCurrentStatus(); });
     }
 
     // execute cyclic tasks with adaptive timing
@@ -234,7 +243,8 @@ private:
 
 	// modules in output task
     DisplayWriter display;
-
+	RelayWriter relay;
+	LEDWriter led;
 	
 };
 

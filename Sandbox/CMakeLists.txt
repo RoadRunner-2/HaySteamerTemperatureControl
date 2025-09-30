@@ -39,9 +39,11 @@ add_executable(Sandbox
     ../TempReader.h
     ../TimeReader.h
     ../TimeReader.cpp
-    ../Drawer.h
+    ../Actor.h
     ../DisplayWriter.h
     ../DisplayWriter.cpp
+    ../RelayWriter.h
+    ../LEDWriter.h
     ../KeypadReader.h
     ../HaySteamerLogic.h
     ../StartConditions.h

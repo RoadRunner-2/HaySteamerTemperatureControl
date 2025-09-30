@@ -6,9 +6,10 @@ using ::testing::Return;
 using ::testing::_;
 
 // Mock Display126x64
-class MockDisplay : public Drawer<4> {
+class MockDisplay : public Actor<String[4]> {
 public:
-    MOCK_METHOD(void, write, (const String (&content)[4]), (override));
+    MOCK_METHOD(void, write, (String[4]), (override)); 
+    MOCK_METHOD(void, setup, (), (override));
 };
 
 // Helper ContentProvider mocks
@@ -33,7 +34,7 @@ TEST(DisplayWriterTest, UpdateAllLinesCallsDrawerWithCorrectContent) {
     writer.setAllProvider(line1, line2, line3, line4);
 
     String expected[4] = { "A", "B", "C", "D" };
-    EXPECT_CALL(mockDisplay, write(testing::Truly([&expected](const String (&arr)[4]) {
+    EXPECT_CALL(mockDisplay, write(testing::Truly([&expected](String(arr)[4]) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected[i]) return false;
         return true;
     })));
@@ -55,7 +56,7 @@ TEST(DisplayWriterTest, SetLineProviderChangesContent) {
 
     // First update: original content
     String expected1[4] = { "A", "B", "C", "D" };
-    EXPECT_CALL(mockDisplay, write(testing::Truly([&expected1](const String (&arr)[4]) {
+    EXPECT_CALL(mockDisplay, write(testing::Truly([&expected1](String(arr)[4]) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected1[i]) return false;
         return true;
     })));
@@ -64,7 +65,7 @@ TEST(DisplayWriterTest, SetLineProviderChangesContent) {
     // Change line 1 provider and update again
     writer.setLineProvider(1, newLine2);
     String expected2[4] = { "A", "X", "C", "D" };
-    EXPECT_CALL(mockDisplay, write(testing::Truly([&expected2](const String (&arr)[4]) {
+    EXPECT_CALL(mockDisplay, write(testing::Truly([&expected2](String(arr)[4]) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected2[i]) return false;
         return true;
     })));
@@ -101,7 +102,7 @@ TEST(DisplayWriterTest, ChangeToInvalidProviderExpectEmptyString) {
 
     // First update: original content
     String expected1[4] = { "A", "B", "C", "D" };
-    EXPECT_CALL(mockDisplay, write(testing::Truly([&expected1](const String(&arr)[4]) {
+    EXPECT_CALL(mockDisplay, write(testing::Truly([&expected1](String(arr)[4]) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected1[i]) return false;
         return true;
     })));
@@ -110,7 +111,7 @@ TEST(DisplayWriterTest, ChangeToInvalidProviderExpectEmptyString) {
     // Change line 1 provider to invalid and update again
     writer.setLineProvider(1, invalid);
     String expected2[4] = { "A", "", "C", "D" };
-    EXPECT_CALL(mockDisplay, write(testing::Truly([&expected2](const String(&arr)[4]) {
+    EXPECT_CALL(mockDisplay, write(testing::Truly([&expected2](String(arr)[4]) {
         for (int i = 0; i < 4; ++i) if (arr[i] != expected2[i]) return false;
         return true;
     })));

@@ -2,7 +2,7 @@
 #include "gmock/gmock.h"
 #include "../TaskScheduler.h"
 #include "../Sensor.h"
-#include "../Drawer.h"
+#include "../Actor.h"
 #include "../Status.h"
 #include "../millis.h"
 
@@ -31,9 +31,22 @@ public:
     char read() override { return 'A'; }
 };
 
-class MockDrawer : public Drawer<4> {
+class MockDisplay : public Actor<String[4]> {
 public:
-    MOCK_METHOD(void, write, (const String(&content)[4]), (override));
+    MOCK_METHOD(void, write, (String[4]), (override));
+    MOCK_METHOD(void, setup, (), (override));
+};
+
+class MockRelay : public Actor<byte> {
+public:
+    MOCK_METHOD(void, write, (byte), (override));
+    MOCK_METHOD(void, setup, (), (override));
+};
+
+class MockLED : public Actor<Status> {
+public:
+    MOCK_METHOD(void, write, (Status), (override));
+    MOCK_METHOD(void, setup, (), (override));
 };
 
 // Helper to override millis()
@@ -49,11 +62,13 @@ protected:
     FakeClock clock;
     FakeTemp temp;
     FakeKeypad keypad;
-    MockDrawer display;
+    MockDisplay display;
+	MockRelay relay;
+	MockLED led;
     std::unique_ptr<CyclicCaller> caller;
 
     void SetUp() override {
-        caller = std::make_unique<CyclicCaller>(&clock, &temp, &keypad, &display);
+        caller = std::make_unique<CyclicCaller>(&clock, &temp, &keypad, &display, &relay, &led);
         fakeMillis = 0;
     }
 };
@@ -133,7 +148,7 @@ TEST_F(CyclicCallerProcessTest, StateTransitionsAreCorrect) {
 
     caller->initializeTasks();
     EXPECT_CALL(display, write(testing::_))
-        .WillOnce(testing::Invoke([&](const String(&content)[4]) {
+        .WillOnce(testing::Invoke([&](String(content)[4]) {
         EXPECT_EQ(content[1], "");
             }));
     
@@ -141,7 +156,7 @@ TEST_F(CyclicCallerProcessTest, StateTransitionsAreCorrect) {
     caller->startTimer = true;  
     fakeMillis += 2000;  
     EXPECT_CALL(display, write(testing::_))
-        .WillOnce(testing::Invoke([&](const String(&content)[4]) {
+        .WillOnce(testing::Invoke([&](String(content)[4]) {
         EXPECT_EQ(content[1], "ready");
             }));
     caller->executeCyclicTasks();  

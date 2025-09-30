@@ -8,7 +8,7 @@
 
 #include "Sandbox/StringConversion.h"
 #include "Sandbox/millis.h"
-#include "Sandbox/Drawer.h"
+#include "Sandbox/Actor.h"
 #include "Sandbox/CyclicModule.h"
 #endif
 
@@ -17,10 +17,11 @@
 #include <functional>
 // millis() is provided by the Arduino framework, no need to define it
 #include <CyclicModule.h>
+#include <Actor.h>
 #include <Arduino.h>
 #endif
 
-using Display126x64 = Drawer<4>;
+using Display126x64 = Actor<String[4]>;
 
 class DisplayWriter : public CyclicModule {
 public:
