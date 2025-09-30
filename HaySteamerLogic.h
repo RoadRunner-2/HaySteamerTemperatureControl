@@ -162,12 +162,12 @@ private:
             break;
         }
 
-        if (errorMessage.empty())
+        if (errorMessage == "")
         {
             errorMessage = hasFault(stateMachine.getCurrentStatus());
         }
 
-        if (!errorMessage.empty())
+        if (errorMessage != "")
         {
             stateMachine.changeStatus(Status::error);
             message = errorMessage;

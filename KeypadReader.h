@@ -12,21 +12,20 @@
 #endif
 
 #ifdef ARDUINO
-// Define toString(int) as String(int)
-using Fptr = std::string(*)(int);
-constexpr Fptr toString = String;
-
 #include <Sensor.h>
 #include <Status.h>
 #include <CyclicModule.h>
+#include <Arduino.h>
+
+#define toString(x) String(x)
 #endif
 
-using Keypad = Sensor<char>;
+using keypad_input = Sensor<char>;
 
 class KeypadReader : public CyclicModule {
 public:
     // No interval parameter needed anymore
-    KeypadReader(Keypad* keypad)
+    KeypadReader(keypad_input* keypad)
         : keypad(keypad), lastValue(0) {
     }
 
@@ -47,7 +46,7 @@ public:
     }
 
 private:
-    Keypad* keypad;
+    keypad_input* keypad;
     int lastValue;
 };
 

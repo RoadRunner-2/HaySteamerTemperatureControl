@@ -24,17 +24,19 @@
 #include "Sandbox/millis.h"
 #include "Sandbox/Sensor.h"
 #include "Sandbox/Actor.h"
+
+using namespace std;
 #endif
 
 #ifdef ARDUINO
-// Define toString(int) as String(int)
-using Fptr = std::string(*)(int);
-constexpr Fptr toString = String;
-
-// millis() is provided by the Arduino framework, no need to define it
 #include "Sensor.h"
 #include "Actor.h"
+#include <Arduino.h>
+
+#define toString(x) String(x)
 #endif
+
+#define DEBUG 1
 
 struct CyclicTask {
     CyclicTask(unsigned long cycle_interval)
@@ -61,6 +63,13 @@ struct CyclicTask {
     }
     virtual void cycleTask()
     {
+        if (DEBUG) 
+        {
+            Serial.print("interval: ");
+            Serial.print(interval);
+            Serial.print(" nextRun: ");
+            Serial.println(nextRun);
+        }
         for (CyclicModule* module : modules) {
             if (module) module->update();
 		}
@@ -90,11 +99,11 @@ struct FastInputTask : public CyclicTask {
 
     void cycleTask() override {
         if (enabled) {
-			__super::cycleTask();
+			CyclicTask::cycleTask();
         }
 	}
     
-	volatile bool enabled = false;
+	volatile bool enabled = true;
 };
 
 struct OutputTask : public CyclicTask {
@@ -106,7 +115,7 @@ struct OutputTask : public CyclicTask {
     };
 
     void initializeTaskTimer(const unsigned long& currentTimeStamp) override {
-		__super::initializeTaskTimer(currentTimeStamp);
+		CyclicTask::initializeTaskTimer(currentTimeStamp);
 		lastRun = currentTimeStamp;
     };
 
@@ -175,9 +184,12 @@ public:
 
 		slowInputTask.addModule(&timeReader);
 		slowInputTask.addModule(&tempReader);
+
 		fastInputTask.addModule(&keypadReader);
 		fastInputTask.addModule(&parameterEditor);
+
         logicTask.addModule(&logic);
+
 		outputTask.addModule(&display);
 		outputTask.addModule(&relay);
 		outputTask.addModule(&led);
@@ -206,6 +218,24 @@ public:
         relay.setProvider([&] { return byte{ ((logic.getCurrentStatus() == Status::heating) || (logic.getCurrentStatus() == holding)) }; });
 		led.setProvider([&] { return logic.getCurrentStatus(); });
     }
+
+    void attach_start_condition(const StartConditions::ConditionFunction& condition)
+    {
+        startConditions.addCondition(condition);
+    };
+
+    void attach_fault_condition(const FaultConditions::FaultCondition& condition, const String& message)
+    {
+        faultConditions.addCondition(condition, message);
+	};
+
+    void enableFastInputTask() {
+        fastInputTask.enable();
+	};
+
+    void disableFastInputTask() {
+		fastInputTask.disable();
+	};
 
     // execute cyclic tasks with adaptive timing
     void executeCyclicTasks() {
@@ -236,7 +266,7 @@ private:
     KeypadReader keypadReader;
     ParameterEditor parameterEditor;
 
-    //modules in logic task
+    // modules in logic task
     HaySteamerLogic logic;
 	StartConditions startConditions;
 	FaultConditions faultConditions;

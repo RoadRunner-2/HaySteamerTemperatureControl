@@ -15,6 +15,9 @@
 #include <Sensor.h>
 #include <Status.h>
 #include <CyclicModule.h>
+#include <Arduino.h>
+
+#define toString(x) String(x)
 #endif
 
 using TempSensor = Sensor<int>;

@@ -13,12 +13,11 @@
 #endif
 
 #ifdef ARDUINO
-// Define toString(int) as String(int)
-using Fptr = std::string(*)(int);
-constexpr Fptr toString = String;
-
 #include <Arduino.h>
 #include <Status.h>
+#include <String.h>
+
+#define toString(x) String(x)
 #endif
 
 class HaySteamerStateMachine {
