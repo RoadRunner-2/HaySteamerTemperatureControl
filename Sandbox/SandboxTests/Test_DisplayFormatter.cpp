@@ -32,21 +32,21 @@ TEST_F(DisplayFormatterTest, FormatEditDisplayTimeEdit) {
     char buffer[] = "12";
     String result = formatter->formatEditDisplay(ManualEditor::TIME_EDIT, buffer, 2, 0, 0, 25, 30);
     // The result should show "12" for time (with blinking cursor)
-    EXPECT_EQ(result, "12: _, 25C, 30min");
+    EXPECT_EQ(result, "12:__, 25C, 30min");
 }
 
 // Tests formatEditDisplay in TEMP_EDIT mode
 TEST_F(DisplayFormatterTest, FormatEditDisplayTempEdit) {
     char buffer[] = "2";
     String result = formatter->formatEditDisplay(ManualEditor::TEMP_EDIT, buffer, 1, 12, 34, 0, 30);
-    EXPECT_EQ(result, "12:34, 2 C, 30min");
+    EXPECT_EQ(result, "12:34, 2_C, 30min");
 }
 
 // Tests formatEditDisplay in SPAN_EDIT mode
 TEST_F(DisplayFormatterTest, FormatEditDisplaySpanEdit) {
     char buffer[] = "4";
     String result = formatter->formatEditDisplay(ManualEditor::SPAN_EDIT, buffer, 1, 12, 34, 25, 0);
-    EXPECT_EQ(result, "12:34, 25C, 4 min");
+    EXPECT_EQ(result, "12:34, 25C, 4_min");
 }
 
 // Tests formatEditDisplay in NONE mode (should fallback to idle display)
