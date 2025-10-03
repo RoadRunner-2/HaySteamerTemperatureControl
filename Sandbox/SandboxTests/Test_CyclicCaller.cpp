@@ -41,6 +41,7 @@ class MockDisplay : public Actor<String[4]> {
 public:
     MOCK_METHOD(void, write, (String[4]), (override));
     MOCK_METHOD(void, setup, (), (override));
+	String lastDisplay[4];
 };
 
 class MockRelay : public Actor<byte> {
@@ -63,6 +64,7 @@ protected:
     FakeTemp temp;
     FakeKeypad keypad;
     MockDisplay display;
+    std::array<String, 4> lastDisplay;
 	MockRelay relay;
 	MockLED led;
     std::unique_ptr<CyclicCaller> caller;
@@ -70,6 +72,14 @@ protected:
     void SetUp() override {
         caller = std::make_unique<CyclicCaller>(&clock, &temp, &keypad, &display, &relay, &led);
         fakeMillis = 0;
+
+        ON_CALL(display, write(testing::_))
+            .WillByDefault(
+                [&](String* content) {
+                    for (size_t i = 0; i < lastDisplay.size(); ++i) {
+                        lastDisplay[i] = content[i];
+                    }
+                });
     }
 };
 
@@ -145,44 +155,40 @@ TEST_F(CyclicCallerProcessTest, FullProcessCycleThroughHaySteamerLogic) {
 
 TEST_F(CyclicCallerProcessTest, StateTransitionsAreCorrect) {   
     clock.set(951827696);  
+    fakeMillis = 951827696;
 
     caller->initializeTasks();
-    EXPECT_CALL(display, write(testing::_))
-        .WillOnce(testing::Invoke([&](String(content)[4]) {
-        EXPECT_EQ(content[1], "");
-            }));
-    
+
+
     // 1. idle -> ready  
     caller->startTimer = true;  
     fakeMillis += 2000;  
-    EXPECT_CALL(display, write(testing::_))
-        .WillOnce(testing::Invoke([&](String(content)[4]) {
-        EXPECT_EQ(content[1], "ready");
-            }));
-    caller->executeCyclicTasks();  
+    
+    caller->executeCyclicTasks();
+    EXPECT_EQ(lastDisplay[1], "ready");
 
     // 2. ready -> heating  
     caller->startTimer = false;  
     clock.set(951827696 + 60); // Simulate timerCondition true  
     fakeMillis += 2000;  
     caller->executeCyclicTasks();  
-    //EXPECT_EQ(caller->logic.getMessage(), "heating");  
+    EXPECT_EQ(lastDisplay[1], "heating");
 
     // 3. heating -> holding  
     temp.set(60);  
     fakeMillis += 2000;  
     caller->executeCyclicTasks();  
-    //EXPECT_EQ(caller->logic.getMessage(), "holding");  
+    EXPECT_EQ(lastDisplay[1], "holding");
 
     // 4. holding -> done  
-    clock.set(951827696 + 60);  
-    fakeMillis += 30000;  
+    clock.set(951827696 + (40*60));  
+    fakeMillis += 2000;  
     caller->executeCyclicTasks();  
-    //EXPECT_EQ(caller->logic.getMessage(), "done");  
+    EXPECT_EQ(lastDisplay[1], "done");
 
     // 5. done -> idle  
     clock.set(951827696 + 60);  
     fakeMillis += 60000;  
     caller->executeCyclicTasks();  
-    //EXPECT_EQ(caller->logic.getMessage(), "idle");  
+    EXPECT_EQ(lastDisplay[1], "idle");
 }
