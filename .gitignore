@@ -12,3 +12,16 @@
 /Software Challenge
 /Stellenausschreibung Stall.docx
 /thinkcell
+/libraries/Adafruit_BusIO
+/libraries/Adafruit_GFX_Library
+/libraries/Adafruit_SSD1306
+/libraries/I2CKeyPad
+/libraries/LiquidCrystal
+/libraries/MAX6675_library
+/libraries/NTC_Thermistor
+/libraries/NTPClient
+/libraries/PCF8575
+/libraries/RTC
+/libraries/Time
+/libraries/U8g2
+/I2C_Scanner
