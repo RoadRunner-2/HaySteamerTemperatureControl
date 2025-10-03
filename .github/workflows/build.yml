@@ -23,7 +23,7 @@ jobs:
 
       - name: Compile Sketch
         run: |
-           arduino-cli compile --fqbn arduino:renesas_uno:unor4wifi ./HaySteamerTemperatureControl.ino
+           arduino-cli compile --fqbn arduino:renesas_uno:unor4wifi ./Arduino/HaySteamerTemperatureControl/HaySteamerTemperatureControl.ino
 
   sandbox-build-test:
     name: Build and Test Sandbox (Native)
