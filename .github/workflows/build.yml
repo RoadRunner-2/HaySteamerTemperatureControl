@@ -1,0 +1,53 @@
+name: CI - Build and Test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  arduino-build:
+    name: Build Arduino Sketch (Uno R4 WiFi)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+
+      - name: Install Arduino Core for UNO R4 WiFi
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install arduino:renesas_uno_wifi
+
+      - name: Compile Sketch
+        run: |
+          arduino-cli compile --fqbn arduino:renesas_uno_wifi:uno_wifi_rev4 ./sketch
+
+  sandbox-build-test:
+    name: Build and Test Sandbox (Native)
+    runs-on: ubuntu-latest
+    needs: arduino-build
+    if: always()
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake
+
+      - name: Build Sandbox
+        run: |
+          mkdir -p build
+          cd build
+          cmake ../Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections"
+          make
+
+      - name: Build and Run Sandbox Tests
+        run: |
+          mkdir -p build_tests
+          cd build_tests
+          cmake ../Sandbox/tests -DCMAKE_CXX_FLAGS="-std=gnu++17 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections"
+          make
+          ctest --output-on-failure
