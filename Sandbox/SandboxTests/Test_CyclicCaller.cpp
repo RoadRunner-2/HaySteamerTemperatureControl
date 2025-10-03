@@ -1,3 +1,9 @@
+#define USE_TEST_MILLIS
+namespace {
+    unsigned long fakeMillis = 0;
+    unsigned long millis() { return fakeMillis; }
+}
+
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "../TaskScheduler.h"
@@ -48,12 +54,6 @@ public:
     MOCK_METHOD(void, write, (Status), (override));
     MOCK_METHOD(void, setup, (), (override));
 };
-
-// Helper to override millis()
-namespace {
-    unsigned long fakeMillis = 0;
-    unsigned long millis() { return fakeMillis; }
-}
 
 // --- Test Fixture ---
 
