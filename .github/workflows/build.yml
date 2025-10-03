@@ -16,6 +16,11 @@ jobs:
       - name: Set up Arduino CLI
         uses: arduino/setup-arduino-cli@v1
 
+      - name: Install custom libraries
+        run: |
+          mkdir -p ~/Arduino/libraries
+          cp -r libraries/* ~/Arduino/libraries/
+
       - name: Install Arduino Core for UNO R4 WiFi
         run: |
           arduino-cli core update-index
@@ -23,7 +28,7 @@ jobs:
 
       - name: Compile Sketch
         run: |
-           arduino-cli compile --fqbn arduino:renesas_uno:unor4wifi ./Arduino/HaySteamerTemperatureControl/HaySteamerTemperatureControl.ino
+           arduino-cli compile --fqbn arduino:renesas_uno:unor4wifi ./HaySteamerTemperatureControl/HaySteamerTemperatureControl.ino
 
   sandbox-build-test:
     name: Build and Test Sandbox (Native)
