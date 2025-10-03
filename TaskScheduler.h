@@ -36,7 +36,7 @@ using namespace std;
 #define toString(x) String(x)
 #endif
 
-#define DEBUG 1
+//#define DEBUG
 
 struct CyclicTask {
     CyclicTask(unsigned long cycle_interval)
@@ -63,13 +63,12 @@ struct CyclicTask {
     }
     virtual void cycleTask()
     {
-        if (DEBUG) 
-        {
+#ifdef DEBUG 
             Serial.print("interval: ");
             Serial.print(interval);
             Serial.print(" nextRun: ");
             Serial.println(nextRun);
-        }
+#endif
         for (CyclicModule* module : modules) {
             if (module) module->update();
 		}
