@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-using String = std::string;
-
 template<typename T>
 class Actor {
 public:
