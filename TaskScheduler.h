@@ -64,10 +64,10 @@ struct CyclicTask {
     virtual void cycleTask()
     {
 #ifdef DEBUG 
-            Serial.print("interval: ");
-            Serial.print(interval);
-            Serial.print(" nextRun: ");
-            Serial.println(nextRun);
+Serial.print("interval: ");
+Serial.print(interval);
+Serial.print(" nextRun: ");
+Serial.println(nextRun);
 #endif
         for (CyclicModule* module : modules) {
             if (module) module->update();
@@ -194,8 +194,7 @@ public:
 		outputTask.addModule(&led);
 
 
-		ParameterEditor::CharacterProvider characterProvider = [&] { return keypadReader.getLatestValue(); };
-		parameterEditor.setCharacterProvider(characterProvider);
+		parameterEditor.setCharacterProvider([&] { return keypadReader.getLatestValue(); });
 
         logic.setStartConditions([&] { return startConditions.checkAllConditions(); });
 		logic.setRunTimer([&] { return startConditions.timerCondition(); });
@@ -209,12 +208,11 @@ public:
 		startConditions.setGetTimeOfDayInMinutes([&] { return timeReader.getTimeOfDayInMinutes(); });
 		startConditions.setGetStartTimeInMinutes([&] { return parameterEditor.getTimeInMinutes(); });
 
-        DisplayWriter::ContentProvider line1 = [&] { return timeReader.getDisplayString(); };
-        DisplayWriter::ContentProvider line2 = [&] { return logic.getMessage(); };
-        DisplayWriter::ContentProvider line3 = [&] { return tempReader.getDisplayString(); };
-		DisplayWriter::ContentProvider line4 = [&] { return parameterEditor.getDisplayString(); };
-        display.setAllProvider(line1, line2, line3, line4);
-        relay.setProvider([&] { return byte{ ((logic.getCurrentStatus() == Status::heating) || (logic.getCurrentStatus() == holding)) }; });
+        display.setAllProvider([&] { return timeReader.getDisplayString(); }
+                             , [&] { return logic.getMessage(); }
+                             , [&] { return tempReader.getDisplayString(); }
+                             , [&] { return parameterEditor.getDisplayString(); });
+        relay.setProvider([&] { return byte{ ((logic.getCurrentStatus() == Status::heating) || (logic.getCurrentStatus() == Status::holding)) }; });
 		led.setProvider([&] { return logic.getCurrentStatus(); });
     }
 
