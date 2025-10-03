@@ -1,0 +1,4 @@
+Relay   KEYWORD1
+setup	KEYWORD2
+write	KEYWORD2
+is_relay_on KEYWORD2

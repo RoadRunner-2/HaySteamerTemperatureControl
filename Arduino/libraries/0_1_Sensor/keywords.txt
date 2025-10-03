@@ -1,0 +1,3 @@
+Sensor    KEYWORD1
+read   KEYWORD2
+initialize  KEYWORD2

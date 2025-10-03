@@ -1,0 +1,4 @@
+StatusLED       KEYWORD1
+setup		KEYWORD2
+write		KEYWORD2
+

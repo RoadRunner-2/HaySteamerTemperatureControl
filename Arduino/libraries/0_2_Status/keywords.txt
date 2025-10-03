@@ -1,0 +1,7 @@
+Status    KEYWORD1
+idle   KEYWORD2
+ready  KEYWORD2
+heating KEYWORD2
+holding_temperature   KEYWORD2
+done   KEYWORD2
+error   KEYWORD2

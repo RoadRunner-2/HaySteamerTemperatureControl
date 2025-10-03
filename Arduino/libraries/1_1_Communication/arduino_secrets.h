@@ -1,0 +1,2 @@
+#define SECRET_SSID "Home-Wlan"
+#define SECRET_PASS "77108045614508170324"
