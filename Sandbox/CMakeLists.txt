@@ -31,15 +31,14 @@ add_executable(Sandbox
     millis.h
     CyclicModule.h
     StringConversion.h
+    Actor.h
     ../TaskScheduler.h
     ../StateMachine.h
-    ../Parameter.h
     ../ParameterEditor.h
     ../ParameterEditor.cpp
     ../TempReader.h
     ../TimeReader.h
     ../TimeReader.cpp
-    ../Actor.h
     ../DisplayWriter.h
     ../DisplayWriter.cpp
     ../RelayWriter.h
@@ -76,9 +75,9 @@ add_executable(UnitTests
     SandboxTests/Test_StartConditions.cpp
     SandboxTests/Test_FaultConditions.cpp
     SandboxTests/Test_HaySteamerLogic.cpp
-    SandboxTests/pch.h # Add this if you use precompiled headers
+    SandboxTests/pch.h
+    Sensor.h
     ../ParameterEditor.cpp
-    ../Sensor.h
     ../TempReader.h
     ../TimeReader.cpp
     ../DisplayWriter.cpp
