@@ -52,8 +52,10 @@ public:
 	/// <returns>String representation of the last temperature value.</returns>
     String getDisplayString() const {
         String result = "";
-		if (lastValue < 10) result += "  ";
-		else if (lastValue < 100) result += " ";
+        if (lastValue < -9) result += "";
+		else if (lastValue < 0) result += " ";
+		else if (lastValue < 10) result += "  ";
+        else if (lastValue < 100) result += " ";
         result += toString(lastValue) + "C";
         return result;
     }
