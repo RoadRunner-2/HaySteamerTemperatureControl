@@ -19,11 +19,11 @@ jobs:
       - name: Install Arduino Core for UNO R4 WiFi
         run: |
           arduino-cli core update-index
-          arduino-cli core install arduino:renesas_uno_wifi
+          arduino-cli core install arduino:renesas_uno
 
       - name: Compile Sketch
         run: |
-          arduino-cli compile --fqbn arduino:renesas_uno_wifi:uno_wifi_rev4 ./sketch
+           arduino-cli compile --fqbn arduino:renesas_uno:unor4wifi ./HaySteamerTemperatureControl.ino
 
   sandbox-build-test:
     name: Build and Test Sandbox (Native)
