@@ -54,7 +54,6 @@ jobs:
   sandbox-build-test:
     name: Build and Test Sandbox (Native)
     runs-on: ubuntu-latest
-    if: always()
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -71,12 +70,10 @@ jobs:
           ctest --output-on-failure --verbose --output-junit TestResults.xml
 
       - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: mikepenz/action-junit-report@v4
         if: always()
         with:
-          files: build/TestResults.xml
-          check_name: Unit Test Results
-          comment_mode: off
+          report_paths: build/TestResults.xml
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
