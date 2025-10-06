@@ -23,7 +23,6 @@ jobs:
         
       - name: Install public Arduino libraries
         run: |
-          arduino-cli lib install "WiFiS3"
           arduino-cli lib install "TimeLib"
           arduino-cli lib install "I2C RTC"
           arduino-cli lib install "I2CKeyPad"
@@ -67,6 +66,6 @@ jobs:
         run: |
           mkdir -p build_tests
           cd build_tests
-          cmake ../HaySteamerTemperatureControl/Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections"
+          cmake ../HaySteamerTemperatureControl/Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -ffunction-sections -fdata-sections"
           make
           ctest --output-on-failure
