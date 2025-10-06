@@ -20,10 +20,29 @@ jobs:
         run: |
           arduino-cli core update-index
           arduino-cli core install arduino:renesas_uno
+        
+      - name: Install public Arduino libraries
+        run: |
+          arduino-cli lib install "Time"
+          arduino-cli lib install "RTC"
+          arduino-cli lib install "I2CKeyPad"
+          arduino-cli lib install "MAX6675 library"
+          arduino-cli lib install "U8g2"
+          arduino-cli lib install "NTPClient"
+
+      - name: Install custom libraries
+        run: |
+          mkdir -p ~/Arduino/libraries
+          cp -r libraries/* ~/Arduino/libraries/
+
+      - name: Install Arduino Core for UNO R4 WiFi
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install arduino:renesas_uno
 
       - name: Compile Sketch
         run: |
-           arduino-cli compile --fqbn arduino:renesas_uno:unor4wifi ./Arduino/HaySteamerTemperatureControl/HaySteamerTemperatureControl.ino
+           arduino-cli compile --fqbn arduino:renesas_uno:unor4wifi ./HaySteamerTemperatureControl/HaySteamerTemperatureControl.ino
 
   sandbox-build-test:
     name: Build and Test Sandbox (Native)
@@ -37,17 +56,10 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y build-essential cmake
 
-      - name: Build Sandbox
-        run: |
-          mkdir -p build
-          cd build
-          cmake ../Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections"
-          make
-
       - name: Build and Run Sandbox Tests
         run: |
           mkdir -p build_tests
           cd build_tests
-          cmake ../Sandbox/tests -DCMAKE_CXX_FLAGS="-std=gnu++17 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections"
+          cmake ../HaySteamerTemperatureControl/Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fexceptions -ffunction-sections -fdata-sections"
           make
           ctest --output-on-failure
