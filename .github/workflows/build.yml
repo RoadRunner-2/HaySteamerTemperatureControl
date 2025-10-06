@@ -63,8 +63,8 @@ jobs:
 
       - name: Build and Run Sandbox Tests
         run: |
-          mkdir -p build_tests
-          cd build_tests
+          mkdir -p build
+          cd build
           cmake ../HaySteamerTemperatureControl/Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fexceptions -ffunction-sections -fdata-sections"
           make
           ctest --output-on-failure --verbose --output-junit TestResults.xml
