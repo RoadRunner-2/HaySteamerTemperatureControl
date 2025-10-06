@@ -15,6 +15,15 @@ jobs:
 
       - name: Set up Arduino CLI
         uses: arduino/setup-arduino-cli@v1
+        
+      - name: Install public Arduino libraries
+        run: |
+          arduino-cli lib install "WiFiS3"
+          arduino-cli lib install "TimeLib"
+          arduino-cli lib install "I2C RTC"
+          arduino-cli lib install "I2CKeyPad"
+          arduino-cli lib install "MAX6675 library"
+          arduino-cli lib install "U8g2"
 
       - name: Install custom libraries
         run: |
@@ -46,13 +55,13 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake ../Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections"
+          cmake ../HaySteamerTemperatureControl/Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections"
           make
 
       - name: Build and Run Sandbox Tests
         run: |
           mkdir -p build_tests
           cd build_tests
-          cmake ../Sandbox/tests -DCMAKE_CXX_FLAGS="-std=gnu++17 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections"
+          cmake ../HaySteamerTemperatureControl/Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fno-exceptions -fno-rtti -ffunction-sections -fdata-sections"
           make
           ctest --output-on-failure
