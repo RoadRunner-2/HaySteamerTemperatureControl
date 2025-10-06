@@ -12,7 +12,6 @@
 #endif
 #ifdef ARDUINO
 #include "Status.h"
-#include "String.h"
 #include "CyclicModule.h"
 #endif
 
