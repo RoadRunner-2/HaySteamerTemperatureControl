@@ -13,7 +13,6 @@
 #endif
 
 #ifdef ARDUINO
-#include <String.h>
 #include <functional>
 // millis() is provided by the Arduino framework, no need to define it
 #include <CyclicModule.h>

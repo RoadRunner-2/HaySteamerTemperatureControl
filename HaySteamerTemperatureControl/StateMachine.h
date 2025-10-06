@@ -15,7 +15,6 @@
 #ifdef ARDUINO
 #include <Arduino.h>
 #include <Status.h>
-#include <String.h>
 
 #define toString(x) String(x)
 #endif

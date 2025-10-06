@@ -4,7 +4,6 @@
 #include <U8g2lib.h>
 #include <Actor.h>
 #include <Arduino.h>
-#include <String.h>
 #include <Wire.h>
 
 class Display : public Actor<String[4]>
