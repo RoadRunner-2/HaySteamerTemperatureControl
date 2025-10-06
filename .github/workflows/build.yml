@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  arduino-build:
+  arduino-compile:
     name: Build Arduino Sketch (Uno R4 WiFi)
     runs-on: ubuntu-latest
     steps:
@@ -42,12 +42,18 @@ jobs:
 
       - name: Compile Sketch
         run: |
-           arduino-cli compile --fqbn arduino:renesas_uno:unor4wifi ./HaySteamerTemperatureControl/HaySteamerTemperatureControl.ino
+           arduino-cli compile --fqbn arduino:renesas_uno:unor4wifi --warnings all \
+            --output-dir ./build ./HaySteamerTemperatureControl/HaySteamerTemperatureControl.ino
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: arduino-build
+          path: ./build/
 
   sandbox-build-test:
     name: Build and Test Sandbox (Native)
     runs-on: ubuntu-latest
-    needs: arduino-build
     if: always()
     steps:
       - name: Checkout Code
@@ -62,17 +68,103 @@ jobs:
           cd build_tests
           cmake ../HaySteamerTemperatureControl/Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fexceptions -ffunction-sections -fdata-sections"
           make
-          ctest --output-on-failure --verbose
+          ctest --output-on-failure --verbose --output-junit TestResults.xml
 
-      - name: Generate Test Report (optional)
-        if: always()
-        run: |
-          cd build_tests
-          ctest --output-on-failure --verbose --output-junit test_results.xml || true
-
-      - name: Publish Test Results (optional)
+      - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
-          files: |
-            build_tests/test_results.xml
+          files: build/TestResults.xml
+          check_name: Unit Test Results
+          comment_mode: off
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: build/TestResults.xml
+
+  static-analysis:
+    name: Static Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+
+      - name: Install Arduino Core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install arduino:renesas_uno
+
+      - name: Install cppcheck
+        run: sudo apt-get install -y cppcheck
+
+      - name: Run cppcheck
+        run: |
+          cppcheck --enable=all --error-exitcode=1 \
+            --suppress=missingIncludeSystem \
+            --inline-suppr \
+            -I ~/Arduino/libraries \
+            HaySteamerTemperatureControl/ || true
+
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake gcovr
+
+      - name: Build with coverage
+        run: |
+          mkdir -p build_coverage
+          cd build_coverage
+          cmake ../HaySteamerTemperatureControl/Sandbox \
+            -DCMAKE_CXX_FLAGS="--coverage" \
+            -DCMAKE_C_FLAGS="--coverage"
+          make UnitTests
+
+      - name: Run tests with coverage
+        run: |
+          cd build_coverage
+          ctest --output-on-failure
+          gcovr --root .. --html --html-details -o coverage.html
+          gcovr --root .. --print-summary
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: build_coverage/coverage.html
+
+  memory-analysis:
+    name: Memory Usage Analysis
+    runs-on: ubuntu-latest
+    needs: arduino-compile
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: arduino-build
+          path: ./build
+
+      - name: Install tools
+        run: |
+          sudo apt-get install -y binutils-arm-none-eabi
+
+      - name: Analyze memory usage
+        run: |
+          arm-none-eabi-size ./build/HaySteamerTemperatureControl.ino.elf
+          arm-none-eabi-nm --print-size --size-sort --radix=d \
+            ./build/HaySteamerTemperatureControl.ino.elf | tail -20
