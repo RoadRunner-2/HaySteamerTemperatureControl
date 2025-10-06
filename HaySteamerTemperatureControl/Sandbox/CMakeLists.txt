@@ -15,6 +15,8 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE 
 
 project ("Sandbox")
 
+enable_testing()
+
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -103,6 +105,10 @@ target_link_libraries(UnitTests PRIVATE GTest::gtest GTest::gtest_main GTest::gm
 set_target_properties(UnitTests PROPERTIES CXX_STANDARD 20) # Match your main project
 
 include(GoogleTest)
-gtest_discover_tests(UnitTests)
+gtest_discover_tests(UnitTests
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    DISCOVERY_TIMEOUT 60
+)
 
-# TODO: Add tests and install targets if needed.
+add_test(NAME AllUnitTests COMMAND UnitTests)
