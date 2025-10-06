@@ -62,4 +62,17 @@ jobs:
           cd build_tests
           cmake ../HaySteamerTemperatureControl/Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fexceptions -ffunction-sections -fdata-sections"
           make
-          ctest --output-on-failure
+          ctest --output-on-failure --verbose
+
+      - name: Generate Test Report (optional)
+        if: always()
+        run: |
+          cd build_tests
+          ctest --output-on-failure --verbose --output-junit test_results.xml || true
+
+      - name: Publish Test Results (optional)
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            build_tests/test_results.xml
