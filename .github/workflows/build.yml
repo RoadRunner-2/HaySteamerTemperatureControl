@@ -133,7 +133,7 @@ jobs:
         run: |
           cd build_coverage
           ctest --output-on-failure
-          gcovr --root .. --html --html-details -o coverage.html
+          gcovr -r . --filter 'HaySteamerTemperatureControl/' --html --html-details -o coverage.html
           gcovr --root .. --print-summary
 
       - name: Upload coverage report
