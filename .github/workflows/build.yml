@@ -23,11 +23,12 @@ jobs:
         
       - name: Install public Arduino libraries
         run: |
-          arduino-cli lib install "TimeLib"
-          arduino-cli lib install "I2C RTC"
+          arduino-cli lib install "Time"
+          arduino-cli lib install "RTC"
           arduino-cli lib install "I2CKeyPad"
-          arduino-cli lib install "MAX6675 library"
+          arduino-cli lib install "MAX6675-library"
           arduino-cli lib install "U8g2"
+          arduino-cli lib install "NTPClient"
 
       - name: Install custom libraries
         run: |
@@ -66,6 +67,6 @@ jobs:
         run: |
           mkdir -p build_tests
           cd build_tests
-          cmake ../HaySteamerTemperatureControl/Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -ffunction-sections -fdata-sections"
+          cmake ../HaySteamerTemperatureControl/Sandbox -DCMAKE_CXX_FLAGS="-std=gnu++17 -fexceptions -ffunction-sections -fdata-sections"
           make
           ctest --output-on-failure
